@@ -21,31 +21,25 @@
 #include "led.h"
 #include "usart.h"
 #include "systick.h"
-#include "pwmOutput.h"
-#include "fanControl.h"
-#include "adc.h"
 #include "motor.h"
-#include "command.h"
-#include "gfiles.h"
 #include "move.h"
-#include "heatbed.h"
-#include "extruder.h"
+#include "toolhead.h"
+#include "command.h"
+#include "vacuum.h"
 #include "hostctrl.h"
 
-const Task_t SystemTasks[] = { LimitSwitch_Task, ExtruderTask, HeatBedTask, Command_Task, HostCtrl_Task};
+const Task_t SystemTasks[] = { LimitSwitch_Task, HostCtrl_Task};
 
 
 static void periphInit()
 {
+	Vacuum_Config();
 	USART_Config(BT_USART, BT_BaudRate);
-	FileManager_Init();
-	PWM_Init(HEATER_PWM_FREQ);
 	Move_Init();
-	Extruder_Init();
-	HeatBed_Init();
-	USBDevice_Config();
+	Toolhead_Init();
+	// USBDevice_Config();
 	Command_Init();
-	HostCtrl_Init();
+	HostCtrl_Init(Debug_USART);
 }
 
 void useHSIClock()
@@ -78,10 +72,6 @@ static void coreInit()
 	SysTick_Init();
 	LED_Config();
 	USART_Config(Debug_USART, Debug_BaudRate);
-
-	//enable remap for max6675 pins
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 }
 
 int main(void)
@@ -93,7 +83,7 @@ int main(void)
 
 	coreInit();
 
-	Delay_ms(2000);
+	Delay_ms(1000);
 
 	DBG_MSG("\r\n\r\n", 0);
 	DBG_MSG("Clock Source: %d", RCC_GetSYSCLKSource());

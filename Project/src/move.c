@@ -3,7 +3,7 @@
  *
  *       Filename:  move.c
  *
- *    Description:  三轴运动控制
+ *    Description:  XY轴运动控制
  *
  *        Version:  
  *        Created:  
@@ -22,16 +22,16 @@
 #include "systick.h"
 #include "limitSwitch.h"
 
-//三轴当前位置(相对原点的距离,单位um),及挤出器累计旋转量
-static int currentPos[4];
+//当前位置(相对原点的坐标,单位um),及挤出器累计旋转量
+static int currentPos[2];
 
 //步进电机每个脉冲产生的位移
-static float um_per_pulse[4];
+static float um_per_pulse[2];
 
-//三轴当前状态
-static volatile uint8_t currentState[3];
+//当前状态
+static volatile uint8_t currentState[2];
 
-static const int8_t motorDirFix[4] = {X_DIRECTION_ADJ, Y_DIRECTION_ADJ, Z_DIRECTION_ADJ, EXTRUDER_MOTOR_DIR};
+static const int8_t motorDirFix[2] = {X_DIRECTION_ADJ, Y_DIRECTION_ADJ};
 
 void Move_Init()
 {
@@ -40,13 +40,17 @@ void Move_Init()
 
 	um_per_pulse[X_Axis] = (float)X_DISTANCE_PER_CYCLE / X_PULSES_PER_CYCLE;
 	um_per_pulse[Y_Axis] = (float)Y_DISTANCE_PER_CYCLE / Y_PULSES_PER_CYCLE;
-	um_per_pulse[Z_Axis] = (float)Z_DISTANCE_PER_CYCLE / Z_PULSES_PER_CYCLE;
-	um_per_pulse[A_Axis] = EXTRUDER_VOLUME_ADJ;
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		currentState[i] = Axis_State_Ready;
 	}
+}
+
+void Move_GetPos(int *x, int *y)
+{
+	*x = currentPos[0];
+	*y = currentPos[1];
 }
 
 static bool alreadyHomed(uint8_t axis)
@@ -55,8 +59,6 @@ static bool alreadyHomed(uint8_t axis)
 		return LimitSwitch_Pressed(LimitSwitch_XMin);
 	if(axis == Y_Axis)
 		return LimitSwitch_Pressed(LimitSwitch_YMin);
-	if(axis == Z_Axis)
-		return LimitSwitch_Pressed(LimitSwitch_ZMin);
 	return false;
 }
 
@@ -71,14 +73,13 @@ static void homingDone(uint8_t axis)
 //步进运动完成,由电机中断调用
 void Move_Axis_Eneded(uint8_t axis)
 {
-	if(axis < 3)
+	if(axis < 2)
 		currentState[axis] = Axis_State_Ready;
 }
 
-//三轴均处于待命状态
-bool Move_XYZ_Ready()
+bool Move_isReady()
 {
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		if(currentState[i] != Axis_State_Ready)
 			return false;
@@ -115,72 +116,68 @@ int calc_step(int axis, int um)
 	return um/um_per_pulse[axis];
 }
 
-//三轴相对移动及挤出器旋转
-bool Move_RelativeMove(int xyza[4])
+//相对移动
+bool Move_RelativeMove(int xy[2])
 {
-	int tmp[4], max_step = 0;
+	int tmp[2], max_step = 0;
 
-	if(!Move_XYZ_Ready())
+	if(!Move_isReady())
 		return false;
 
-	for (int i = 0; i < 4; ++i)
-		tmp[i] = currentPos[i] + xyza[i];
+	for (int i = 0; i < 2; ++i)
+		tmp[i] = currentPos[i] + xy[i];
 
-	if(tmp[X_Axis] < 0 || tmp[X_Axis] > X_MAX_LIMIT)
-		return false;
-	if(tmp[Y_Axis] < 0 || tmp[Y_Axis] > Y_MAX_LIMIT)
-		return false;
-	if(tmp[Z_Axis] < 0 || tmp[Z_Axis] > Z_MAX_LIMIT)
-		return false;
+	// if(tmp[X_Axis] < 0 || tmp[X_Axis] > X_MAX_LIMIT)
+	// 	return false;
+	// if(tmp[Y_Axis] < 0 || tmp[Y_Axis] > Y_MAX_LIMIT)
+	// 	return false;
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 2; ++i)
 		currentPos[i] = tmp[i];
 
-	for (int i = 0; i < 4; ++i){
-		tmp[i] = calc_step(i, xyza[i]);
+	for (int i = 0; i < 2; ++i){
+		tmp[i] = calc_step(i, xy[i]);
 		if(tmp[i] > max_step)
 			max_step = tmp[i];
 	}
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		if(!tmp[i])
 			continue;
 		currentState[i] = Axis_State_Moving;
 		Motor_Start(i, tmp[i], max_step/tmp[i],
-			motorDirFix[i] * (xyza[i] > 0 ? Move_Dir_Forward : Move_Dir_Back) );
+			motorDirFix[i] * (xy[i] > 0 ? Move_Dir_Forward : Move_Dir_Back) );
 	}
 
 	return true;
 }
 
-//三轴绝对移动及挤出器旋转
-bool Move_AbsoluteMove(int xyza[4])
+//绝对移动
+bool Move_AbsoluteMove(int xy[2])
 {
-	int tmp[4], delta[4], max_step = 0;
+	int tmp[2], delta[2], max_step = 0;
 
-	if(!Move_XYZ_Ready())
-		return false;
-
-	if(xyza[X_Axis] < 0 || xyza[X_Axis] > X_MAX_LIMIT)
-		return false;
-	if(xyza[Y_Axis] < 0 || xyza[Y_Axis] > Y_MAX_LIMIT)
-		return false;
-	if(xyza[Z_Axis] < 0 || xyza[Z_Axis] > Z_MAX_LIMIT)
+	if(!Move_isReady())
 		return false;
 
-	for (int i = 0; i < 4; ++i){
-		delta[i] = xyza[i] - currentPos[i];
-		currentPos[i] = xyza[i];
+	// if(xyza[X_Axis] < 0 || xyza[X_Axis] > X_MAX_LIMIT)
+	// 	return false;
+	// if(xyza[Y_Axis] < 0 || xyza[Y_Axis] > Y_MAX_LIMIT)
+	// 	return false;
+
+	for (int i = 0; i < 2; ++i){
+		delta[i] = xy[i] - currentPos[i];
+		currentPos[i] = xy[i];
 	}
 
-	for (int i = 0; i < 4; ++i){
+	for (int i = 0; i < 2; ++i){
 		tmp[i] = calc_step(i, delta[i]);
 		if(tmp[i] > max_step)
 			max_step = tmp[i];
 	}
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		if(!tmp[i])
 			continue;
@@ -192,18 +189,16 @@ bool Move_AbsoluteMove(int xyza[4])
 	return true;
 }
 
-bool Move_SetCurrentPos(int xyza[4])
+bool Move_SetCurrentPos(int xy[2])
 {
-	if(xyza[X_Axis] < 0 || xyza[X_Axis] > X_MAX_LIMIT)
-		return false;
-	if(xyza[Y_Axis] < 0 || xyza[Y_Axis] > Y_MAX_LIMIT)
-		return false;
-	if(xyza[Z_Axis] < 0 || xyza[Z_Axis] > Z_MAX_LIMIT)
-		return false;
+	// if(xyza[X_Axis] < 0 || xyza[X_Axis] > X_MAX_LIMIT)
+	// 	return false;
+	// if(xyza[Y_Axis] < 0 || xyza[Y_Axis] > Y_MAX_LIMIT)
+	// 	return false;
 
 
-	for (int i = 0; i < 4; ++i){
-		currentPos[i] = xyza[i];
+	for (int i = 0; i < 2; ++i){
+		currentPos[i] = xy[i];
 	}
 	
 	return true;
@@ -233,14 +228,14 @@ void Move_LimitReached(uint8_t sw_num)
 			}
 			break;
 
-		case LimitSwitch_ZMin:
-			if(currentState[Z_Axis] == Axis_State_Homing)
-				homingDone(Z_Axis);
-			else{
-				err = true;
-				err_axis = Z_Axis;
-			}
-			break;
+		// case LimitSwitch_ZMin:
+		// 	if(currentState[Z_Axis] == Axis_State_Homing)
+		// 		homingDone(Z_Axis);
+		// 	else{
+		// 		err = true;
+		// 		err_axis = Z_Axis;
+		// 	}
+		// 	break;
 
 		// case LimitSwitch_XMax:
 		// ...

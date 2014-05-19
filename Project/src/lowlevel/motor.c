@@ -153,7 +153,10 @@ void Motor_Interrupt(void)
 					if(!Motor_PendingSteps[i]){
 						//attenuate holding current
 						GPIO_SetBits(Motor_OE_Ports[i], Motor_OE_Pins[i]);
-						Move_Axis_Eneded(i);
+						if(i == X_Axis || i == Y_Axis)
+							Move_Axis_Eneded(i);
+						else
+							Toolhead_Axis_Eneded(i);
 					}
 				}
 			}

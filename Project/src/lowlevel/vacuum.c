@@ -1,9 +1,9 @@
 /*
  * =====================================================================================
  *
- *       Filename:  fanControl.c
+ *       Filename:  vacuum.c
  *
- *    Description:  挤出器散热风扇控制
+ *    Description:  真空吸笔控制
  *
  *        Version:  
  *        Created:  
@@ -18,32 +18,32 @@
 
 #include "stm32f10x.h"
 #include "common.h"
-#include "fanControl.h"
+#include "vacuum.h"
 
 
-void Fan_Config()
+void Vacuum_Config()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	RCC_GPIOClockCmd(Ex1Fan_Port, ENABLE); 
+	RCC_GPIOClockCmd(Pickup_Port, ENABLE); 
 
-	GPIO_InitStructure.GPIO_Pin =  Ex1Fan_Pin;
+	GPIO_InitStructure.GPIO_Pin =  Pickup_Pin;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
-	GPIO_Init(Ex1Fan_Port, &GPIO_InitStructure);
-	Fan_Enable(false);
+	GPIO_Init(Pickup_Port, &GPIO_InitStructure);
 
+	Vacuum_Pick(false);
 }
 
-void Fan_Enable(bool bEnabled)
+void Vacuum_Pick(bool bEnabled)
 {
 #ifdef DRIVER_BOARD_POLARITY
 	bEnabled = !bEnabled;
 #endif
 
     if (bEnabled)
-        GPIO_SetBits(Ex1Fan_Port, Ex1Fan_Pin);
+        GPIO_SetBits(Pickup_Port, Pickup_Pin);
     else
-        GPIO_ResetBits(Ex1Fan_Port, Ex1Fan_Pin);
+        GPIO_ResetBits(Pickup_Port, Pickup_Pin);
 }

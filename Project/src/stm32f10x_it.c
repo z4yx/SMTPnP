@@ -173,7 +173,7 @@ void EXTI15_10_IRQHandler(void)
 
 void TIM2_IRQHandler(void)
 {
-    PWM_TIM2_Interrupt();
+    // PWM_TIM2_Interrupt();
 }
 
 void TIM3_IRQHandler(void)

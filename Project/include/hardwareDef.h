@@ -24,31 +24,13 @@
 #define BT_USART USART3
 #define BT_BaudRate 9600
 
-#define Ex1Fan_Pin GPIO_Pin_15
-#define Ex1Fan_Port GPIOC
-
-#define PWM2_Port    GPIOA
-#define PWM2_Ch1_Pin GPIO_Pin_0
-#define PWM2_Ch2_Pin GPIO_Pin_1
-#define PWM2_Ch3_Pin GPIO_Pin_2
-#define PWM2_Ch4_Pin GPIO_Pin_3
-
-#define Ex1Heat_Ch   1
-#define HBP_Ch       2
+#define Pickup_Pin GPIO_Pin_1
+#define Pickup_Port GPIOA
 
 /*Defined by PWM*/
 // #define Ex1Heat_Pin GPIO_Pin_0
 // #define HBP_Pin GPIO_Pin_1
 // #define HBP_Port GPIOA
-
-#define ThermcoupleSck_Pin GPIO_Pin_5
-#define ThermcoupleCs_Pin GPIO_Pin_4
-#define ThermcoupleDo_Pin GPIO_Pin_3
-#define Thermcouple_Port GPIOB
-
-#define HeaterBoardTherm_Pin GPIO_Pin_0
-#define HeaterBoardTherm_Port GPIOC
-#define HeaterBoardTherm_ADCChannel ADC_Channel_10
 
 #define X_Axis_Start_Pin GPIO_Pin_6
 #define X_Axis_Start_Port GPIOA
@@ -105,8 +87,6 @@
 #define USB_Port GPIOA
 #define USB_Det  GPIO_Pin_15
 #define USB_Conn GPIO_Pin_8
-
-#define STEPPER_COUNT 4
 
 #define SD_DETECT_PIN                    GPIO_Pin_7
 #define SD_DETECT_GPIO_PORT              GPIOC

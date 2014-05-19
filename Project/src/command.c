@@ -19,8 +19,6 @@
 #include "command.h"
 #include "move.h"
 #include "motor.h"
-#include "heatbed.h"
-#include "extruder.h"
 #include "gfiles.h"
 #include "gcode.h"
 #include "usb.h"
@@ -100,8 +98,8 @@ bool Command_StopPrinting()
 	}
 
 	Motor_PowerOff();
-	Extruder_Stop_Heating();
-	HeatBed_Stop_Heating();
+	// Extruder_Stop_Heating();
+	// HeatBed_Stop_Heating();
 	currentState = MACH_STATE_ENDED;
 
 	return true;
@@ -137,10 +135,10 @@ void Command_Task(void)
 			break;
 		case MACH_STATE_WAIT_HEAT:
 			// DBG_MSG("MACH_STATE_WAIT_HEAT", 0);
-			if(Extruder_TempReached() && HeatBed_TempReached()) {
-				DBG_MSG("Temperature Reached!", 0);
-				currentState = MACH_STATE_READY;
-			}
+			// if(Extruder_TempReached() && HeatBed_TempReached()) {
+			// 	DBG_MSG("Temperature Reached!", 0);
+			// 	currentState = MACH_STATE_READY;
+			// }
 			break;
 		case MACH_STATE_DRAWING:
 			if(Move_XYZ_Ready()){
@@ -249,7 +247,7 @@ void Command_doNext()
 						E = UNIT_CONV(value);
 				}
 				DBG_MSG("G92_SET_POSITION %d,%d,%d,%d", X, Y, Z, E);
-				REPORT(INFO_G_G92,"%d,%d,%d,%d", X, Y, Z, E);
+				// REPORT(INFO_G_G92,"%d,%d,%d,%d", X, Y, Z, E);
 				setCurrentPos();
 				break;
 			case G162_HOME_MAXIMUM:
@@ -260,17 +258,17 @@ void Command_doNext()
 					if(sym == 'X'){
 						Move_Home(X_Axis);
 						DBG_MSG("G161/162 X", 0);
-						REPORT(INFO_G_G161,"X", 0);
+						// REPORT(INFO_G_G161,"X", 0);
 					}
 					else if(sym == 'Y'){
 						Move_Home(Y_Axis);
 						DBG_MSG("G161/162 Y", 0);
-						REPORT(INFO_G_G161,"Y", 0);
+						// REPORT(INFO_G_G161,"Y", 0);
 					}
 					else if(sym == 'Z'){
 						Move_Home(Z_Axis);
 						DBG_MSG("G161/162 Z", 0);
-						REPORT(INFO_G_G161,"Z", 0);
+						// REPORT(INFO_G_G161,"Z", 0);
 					}
 					else
 						break;
@@ -286,19 +284,19 @@ void Command_doNext()
 		cmd = getnum(&p);
 		switch(cmd){
 			case M6_WAIT_FOR_TOOL:
-				if(getparam(&p, &sym, &value) && sym == 'T')
-					T = value;
-				DBG_MSG("M6_WAIT_FOR_TOOL %d", T);
-				REPORT(INFO_G_M6,"%d", T);
+				// if(getparam(&p, &sym, &value) && sym == 'T')
+				// 	T = value;
+				// DBG_MSG("M6_WAIT_FOR_TOOL %d", T);
+				// REPORT(INFO_G_M6,"%d", T);
 
-				Extruder_Start_Heating(EXTRUDER_DEFAULT_TEMP);
-				HeatBed_Start_Heating(HEATBED_DEFAULT_TEMP);
-				Motor_PowerOff();
-				currentState = MACH_STATE_WAIT_HEAT;
+				// Extruder_Start_Heating(EXTRUDER_DEFAULT_TEMP);
+				// HeatBed_Start_Heating(HEATBED_DEFAULT_TEMP);
+				// Motor_PowerOff();
+				// currentState = MACH_STATE_WAIT_HEAT;
 				break;
 			case M18_DISABLE_MOTORS:
 				DBG_MSG("M18_DISABLE_MOTORS", 0);
-				REPORT(INFO_G_M18,"", 0);
+				// REPORT(INFO_G_M18,"", 0);
 
 				Motor_PowerOff();
 				break;
@@ -307,7 +305,7 @@ void Command_doNext()
 					P = value;
 				Progress = P;
 				DBG_MSG("M73_SET_PROGRESS %d", P);
-				REPORT(INFO_G_M73,"%d", P);
+				// REPORT(INFO_G_M73,"%d", P);
 				break;
 			default:
 				break;

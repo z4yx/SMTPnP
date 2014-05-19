@@ -23,26 +23,32 @@
 #include "led.h"
 #include "command.h"
 #include "move.h"
-#include "heatbed.h"
-#include "extruder.h"
-#include "gfiles.h"
-#include "fanControl.h"
+#include "vacuum.h"
+#include "toolhead.h"
 #include <string.h>
 #include <stdlib.h>
 
 #define CMD_BUF_LEN 8
-#define PARAM_BUF_LEN 8
+#define PARAM_BUF_LEN 64
 
 enum {PARSE_INITIAL, PARSE_CMD, PARSE_PARAM};
 static uint8_t parse_stage;
 static bool cmd_received;
 static char cmd_buf[CMD_BUF_LEN], param_buf[PARAM_BUF_LEN];
 
-void HostCtrl_Init(void)
+// 运动结束后报告
+static bool move_pending_report, toolhead_pending_report;
+
+static USART_TypeDef* hostctrl_usart;
+
+#define REPORT(info_type, format, ...) USART_printf(hostctrl_usart, "!I#%s#" format "\r\n", info_type, __VA_ARGS__)
+
+void HostCtrl_Init(USART_TypeDef * usart)
 {
 	// USART_RxInt_Config(true);
 	parse_stage = PARSE_INITIAL;
 	cmd_received = false;
+	hostctrl_usart = usart;
 }
 
 bool HostCtrl_GetCmd(char **p_cmd, char **p_param)
@@ -97,22 +103,41 @@ static void parse_host_cmd(uint8_t byte)
 	}
 }
 
+static void reportCoordinate()
+{
+	int x,y,z;
+	Move_GetPos(&x, &y);
+	Toolhead_GetZPos(&z);
+	REPORT(INFO_COORD, "X=%d Y=%d Z=%d", x, y, z);
+}
+
+static void reportMoveEnded()
+{
+	bool flag = false;
+	if(move_pending_report && Move_isReady()){
+		move_pending_report = false;
+		flag = true;
+		REPORT(INFO_DONE, "%s", "move");
+	}
+	if(toolhead_pending_report && Toolhead_isReady()){
+		toolhead_pending_report = false;
+		flag = true;
+		REPORT(INFO_DONE, "%s", "toolhead");
+	}
+	if(flag)
+		reportCoordinate();
+}
+
 static void reportState()
 {
 	uint8_t b;
-	int16_t temp;
+	// int16_t temp;
 	uint16_t state;
 	uint8_t progress;
-	int output;
+	// int output;
 
 	Command_GetState(&b, &state, &progress);
 	REPORT(INFO_PRINT, "%d,%d,%d", (int)b, (int)state, (int)progress);
-
-	Extruder_GetState(&temp, &output, &b);
-	REPORT(INFO_EXTRUDER, "%d,%d,%d", (int)temp, (int)output, (int)b);
-
-	HeatBed_GetState(&temp, &output, &b);
-	REPORT(INFO_HEATBED, "%d,%d,%d", (int)temp, (int)output, (int)b);
 
 }
 
@@ -123,7 +148,7 @@ static void processRequest(char* cmd, char* param)
 	DBG_MSG("Cmd: %s, Param: %s", cmd, param);
 	if(strcmp(cmd, "QRY") == 0){
 		reportState();
-	}else if(strcmp(cmd, "STOP") == 0){
+	}/*else if(strcmp(cmd, "STOP") == 0){
 		bool ret = Command_StopPrinting();
 		REPORT(INFO_REPLY, "%d", ret);
 	}else if(strcmp(cmd, "LIST") == 0){
@@ -141,56 +166,45 @@ static void processRequest(char* cmd, char* param)
 			bool ret = Command_StartPrinting((*files)[num]);
 			REPORT(INFO_REPLY, "%d", ret);
 		}
-	}else if(strcmp(cmd, "DBG") == 0){
+	}*/else if(strcmp(cmd, "DBG") == 0){
 		uint8_t tmp;
-		int val[4] = {0};
-		if(!Command_IsStandBy()){
-			REPORT(INFO_REPLY, "0", 0);
-		}else{
-			int result = 1;
-			switch(*param){
-				case 'X':
-				case 'Y':
-				case 'Z':
-				case 'A':
-					if(*param == 'A')
-						tmp = 3;
-					else
-						tmp = *param-'X';
-					val[tmp] = atoi(param+1)*1000; //um->mm
-					Motor_PowerOn();
-					result = Move_RelativeMove(val);
-					break;
-				case 'e':
-					Extruder_SetOutput(atoi(param+1));
-					break;
-				case 'E':
-					if(*(param+1)){
-						if(*(param+1) == '-'){
-							Extruder_Stop_Heating();
-						}else{
-							Extruder_Start_Heating(atoi(param+1));
-						}
-					}
-					break;
-				case 'h':
-					HeatBed_SetOutput(atoi(param+1));
-					break;
-				case 'H':
-					if(*(param+1)){
-						if(*(param+1) == '-'){
-							HeatBed_Stop_Heating();
-						}else{
-							HeatBed_Start_Heating(atoi(param+1));
-						}
-					}
-					break;
-				case 'f':
-					Fan_Enable(*(param+1) == '1');
-					break;
-			}
-			REPORT(INFO_REPLY, "%d", result);
+		int val[2] = {0};
+		int result = 1;
+		switch(*param){
+			case 'X':
+			case 'Y':
+				tmp = *param-'X';
+				val[tmp] = atoi(param+1);
+				Motor_PowerOn();
+				result = Move_RelativeMove(val);
+				move_pending_report = true;
+				break;
+			case 'Z':
+				Motor_PowerOn();
+				result = Toolhead_Z_Relative(atoi(param+1));
+				toolhead_pending_report = true;
+				break;
+			case 'A':
+				Motor_PowerOn();
+				result = Toolhead_Rotate(atoi(param+1));
+				toolhead_pending_report = true;
+				break;
+			case 'f':
+				Vacuum_Pick(*(param+1) == '1');
+				break;
 		}
+		REPORT(INFO_REPLY, "%d", result);
+	}else if(strcmp(cmd, "SETC") == 0){
+		char *sep = strchr(param, ',');
+		if(sep){
+			int xy[2];
+			xy[0] = atoi(param);
+			xy[1] = atoi(sep+1);
+			DBG_MSG("Set Position %d,%d", xy[0], xy[1]);
+			Move_SetCurrentPos(xy);
+		}
+	}else if(strcmp(cmd, "GETC") == 0){
+		reportCoordinate();
 	}
 }
 
@@ -217,17 +231,18 @@ static void fetchHostCmd(void)
 
 void HostCtrl_Task(void)
 {
-	if(USART_GetFlagStatus(BT_USART, USART_FLAG_RXNE) == SET){
-		uint8_t byte = USART_getchar(BT_USART);
+	if(USART_GetFlagStatus(hostctrl_usart, USART_FLAG_RXNE) == SET){
+		uint8_t byte = USART_getchar(hostctrl_usart);
 		parse_host_cmd(byte);
 	}
 
 	fetchHostCmd();
+	reportMoveEnded();
 }
 
 void HostCtrl_Interrupt(void)
 {
-	uint8_t byte = USART_getchar(BT_USART);
-	USART_putchar(BT_USART, byte);
-	USART_ClearITPendingBit(BT_USART, USART_FLAG_RXNE);
+	uint8_t byte = USART_getchar(hostctrl_usart);
+	USART_putchar(hostctrl_usart, byte);
+	USART_ClearITPendingBit(hostctrl_usart, USART_FLAG_RXNE);
 }
