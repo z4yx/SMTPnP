@@ -1,0 +1,3 @@
+
+SERIAL_NAME = '/dev/cu.usbserial-AH0298NJ'
+SERIAL_BAUD = 115200

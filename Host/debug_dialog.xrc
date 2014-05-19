@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource class="wxFlexGridSizer">
+  <object class="wxPanel" name="panel">
+    <object class="wxGridBagSizer">
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <object class="sizeritem">
+            <object class="wxGridBagSizer">
+              <vgap>5</vgap>
+              <hgap>5</hgap>
+              <object class="sizeritem">
+                <object class="wxButton" name="YPlus">
+                  <label>Y+</label>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+                <cellpos>0,1</cellpos>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="YMinus">
+                  <label>Y-</label>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+                <cellpos>2,1</cellpos>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="XPlus">
+                  <label>X+</label>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+                <cellpos>1,0</cellpos>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="XMinus">
+                  <label>X-</label>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+                <cellpos>1,2</cellpos>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="TextXY">
+                  <size>158,-1</size>
+                  <style>wxTE_READONLY|wxTE_CENTRE</style>
+                </object>
+                <option>-1</option>
+                <flag>wxALIGN_CENTRE</flag>
+                <cellpos>1,1</cellpos>
+              </object>
+            </object>
+          </object>
+          <label>Move</label>
+          <orient>wxVERTICAL</orient>
+        </object>
+        <cellpos>0,0</cellpos>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <object class="sizeritem">
+            <object class="wxFlexGridSizer">
+              <object class="sizeritem">
+                <object class="wxButton" name="ZMinus">
+                  <label>Z-</label>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="TextZ">
+                  <size>80,-1</size>
+                  <style>wxTE_READONLY|wxTE_CENTRE</style>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="ZPlus">
+                  <label>Z+</label>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticLine"/>
+                <flag>wxEXPAND</flag>
+              </object>
+              
+              <cols>1</cols>
+              <rows>5</rows>
+              <vgap>5</vgap>
+              <hgap>5</hgap>
+              <object class="sizeritem">
+                <object class="wxGridSizer">
+                  <object class="sizeritem">
+                    <object class="wxTextCtrl" name="TextR">
+                      <value>45</value>
+                      <size>40,-1</size>
+                    </object>
+                    <flag>wxALIGN_CENTRE</flag>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="Rotate">
+                      <size>60,-1</size>
+                      <label>Rotate</label>
+                    </object>
+                    <flag>wxALIGN_CENTRE</flag>
+                  </object>
+                  <cols>2</cols>
+                  <rows>1</rows>
+                  <vgap>5</vgap>
+                  <hgap>3</hgap>
+                </object>
+                <flag>wxALIGN_CENTRE</flag>
+              </object>
+            </object>
+          </object>
+          <label>Toolhead</label>
+          <orient>wxVERTICAL</orient>
+        </object>
+        <cellpos>0,1</cellpos>
+        <cellspan>2,1</cellspan>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Coordinate</label>
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxGridSizer">
+              <cols>2</cols>
+              <rows>1</rows>
+              <vgap>5</vgap>
+              <hgap>3</hgap>
+              <object class="sizeritem">
+                <object class="wxButton" name="SetCur">
+                  <label>Set As Current</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="SetZero">
+                  <label>Set To Zero</label>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <cellpos>1,0</cellpos>
+        <flag>wxEXPAND</flag>
+      </object>
+      <growablecols>1</growablecols>
+    </object>
+  </object>
+</resource>
