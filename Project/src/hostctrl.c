@@ -194,6 +194,29 @@ static void processRequest(char* cmd, char* param)
 				break;
 		}
 		REPORT(INFO_REPLY, "%d", result);
+	}else if(strcmp(cmd, "ABSXY") == 0){
+		char *sep = strchr(param, ',');
+		if(sep){
+			int xy[2];
+			xy[0] = atoi(param);
+			xy[1] = atoi(sep+1);
+			DBG_MSG("Absolute Move %d,%d", xy[0], xy[1]);
+			move_pending_report = true;
+			Motor_PowerOn();
+			Move_AbsoluteMove(xy);
+		}
+	}else if(strcmp(cmd, "ABSZ") == 0){
+		int z = atoi(param);
+		DBG_MSG("Absolute Z Move steps:%d", z);
+		toolhead_pending_report = true;
+		Motor_PowerOn();
+		Toolhead_Z_Absolute(z);
+	}else if(strcmp(cmd, "ROTATE") == 0){
+		int z = atoi(param);
+		DBG_MSG("Rotate degree:%d", z);
+		toolhead_pending_report = true;
+		Motor_PowerOn();
+		Toolhead_Rotate(z);
 	}else if(strcmp(cmd, "SETC") == 0){
 		char *sep = strchr(param, ',');
 		if(sep){
