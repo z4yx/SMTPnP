@@ -47,7 +47,7 @@
               </object>
             </object>
           </object>
-          <label>Move</label>
+          <label>Relative Move</label>
           <orient>wxVERTICAL</orient>
         </object>
         <cellpos>0,0</cellpos>
@@ -141,7 +141,37 @@
         <cellpos>1,0</cellpos>
         <flag>wxEXPAND</flag>
       </object>
-      <growablecols>1</growablecols>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Absolute Move</label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxGridSizer">
+              <cols>1</cols>
+              <rows>2</rows>
+              <vgap>5</vgap>
+              <hgap>5</hgap>
+              <object class="sizeritem">
+                <object class="wxSlider" name="SliderX">
+                  <style>wxSL_AUTOTICKS|wxSL_HORIZONTAL</style>
+                  <size>1000,-1</size>
+                  <max>1000</max>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxSlider" name="SliderY">
+                  <style>wxSL_AUTOTICKS|wxSL_HORIZONTAL</style>
+                  <size>1000,-1</size>
+                  <max>1000</max>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <cellpos>2,0</cellpos>
+        <cellspan>1,2</cellspan>
+        <flag>wxEXPAND</flag>
+      </object>
     </object>
   </object>
 </resource>
