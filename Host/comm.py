@@ -3,22 +3,12 @@ import threading
 import conf
 import wx
 import wx.lib.newevent
+import time
 
 _com = None
 _thread = None
 RecvEvent, EVT_RECV = wx.lib.newevent.NewEvent()
-# _evt_type = wx.NewEventType()
-# EVT_RECV = wx.PyEventBinder(_evt_type, 1)
 
-
-# class RecvEvent(wx.PyCommandEvent):
-
-#     def __init__(self, etype, eid, value=None):
-#         wx.PyCommandEvent.__init__(self, etype, eid)
-#         self._value = value
-
-#     def GetValue(self):
-#         return self._value
 
 def DecodeReport(line):
     line = line.strip()
@@ -31,9 +21,12 @@ def DecodeReport(line):
 
 class RecvThread(threading.Thread):
 
-    def __init__(self, win):
+    def __init__(self):
         super(RecvThread, self).__init__()
-        self.win = win
+        self.daemon = True
+
+    def pass_message(self, info, content):
+        pass
 
     def run(self):
         global _com, _evt_type
@@ -48,21 +41,49 @@ class RecvThread(threading.Thread):
             print "recv: %s" % line.strip()
             info, content = DecodeReport(line)
             if info:
-                # evt = RecvEvent(_evt_type, -1, line)
-                evt = RecvEvent(info=info, content=content)
-                wx.PostEvent(self.win, evt)
+                self.pass_message(info, content)
 
 
-def Init(win=None):
+class RecvThread4wx(RecvThread):
+
+    def __init__(self, win):
+        super(RecvThread4wx, self).__init__()
+        self.win = win
+
+    def pass_message(self, info, content):
+        evt = RecvEvent(info=info, content=content)
+        wx.PostEvent(self.win, evt)
+
+
+class RecvThread4queue(RecvThread):
+
+    def __init__(self, q):
+        super(RecvThread4queue, self).__init__()
+        self.q = q
+
+    def pass_message(self, info, content):
+        item = (info, content)
+        self.q.put_nowait(item)
+
+
+def Init(win=None, queue=None):
     global _com, _thread
+    assert(win or queue)
     _com = serial.Serial(conf.SERIAL_NAME, conf.SERIAL_BAUD)
-    _thread = RecvThread(win)
+    if win:
+        _thread = RecvThread4wx(win)
+    elif queue:
+        _thread = RecvThread4queue(queue)
     _thread.start()
 
-
+last_sent = 0
 def Write(data):
+    global last_sent
+    d = time.clock() - last_sent
+    if d < 0.1:
+        time.sleep(0.1 - d)
     _com.write(data)
-
+    last_sent = time.clock()
 
 def SendCommand(name, param):
     Write("!{}#{}\r\n".format(name, param))
@@ -78,7 +99,19 @@ def SendSetCoordinateCommand(x, y):
 
 def SendGetCoordinateCommand():
     SendCommand("GETC", '')
-    
+
+
+def SendAbsoluteXYMove(x, y):
+    SendCommand("ABSXY", '{},{}'.format(x, y))
+
+
+def SendAbsoluteZMove(z_steps):
+    SendCommand("ABSZ", '{}'.format(z_steps))
+
+
+def SendToolheadRotate(degree):
+    SendCommand("ROTATE", '{}'.format(degree))
+
 # def SendRelativeMove(axis, distance):
 #     SendCommand(axis, distance)
 
