@@ -1,0 +1,5 @@
+Record=SheetSymbol|SourceDocument=DriverBoard.SchDoc|Designator=Motor1|SchDesignator=repeat(Motor,1,4)|FileName=OneMotor.SchDoc|SymbolType=Normal|RawFileName=OneMotor.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
+Record=SheetSymbol|SourceDocument=DriverBoard.SchDoc|Designator=Motor2|SchDesignator=repeat(Motor,1,4)|FileName=OneMotor.SchDoc|SymbolType=Normal|RawFileName=OneMotor.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
+Record=SheetSymbol|SourceDocument=DriverBoard.SchDoc|Designator=Motor3|SchDesignator=repeat(Motor,1,4)|FileName=OneMotor.SchDoc|SymbolType=Normal|RawFileName=OneMotor.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
+Record=SheetSymbol|SourceDocument=DriverBoard.SchDoc|Designator=Motor4|SchDesignator=repeat(Motor,1,4)|FileName=OneMotor.SchDoc|SymbolType=Normal|RawFileName=OneMotor.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
+Record=TopLevelDocument|FileName=DriverBoard.SchDoc
