@@ -23,7 +23,9 @@
 #include "configure.h"
 #include <stdint.h>
 
-#define NULL ((void*)0)
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
 #ifndef bool
 #define bool uint8_t
 #define true 1

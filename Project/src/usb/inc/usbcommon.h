@@ -1,15 +1,6 @@
 #ifndef _USB_COMMON_H__
 #define _USB_COMMON_H__
 #include "usb_type.h"
-#include <stdint.h>
-
-#ifndef bool
-#define bool uint8_t
-#define true 1
-#define TRUE true
-#define false 0
-#define FALSE false
-#endif
 
 void Set_USBClock(void);
 void Enter_LowPowerMode(void);
