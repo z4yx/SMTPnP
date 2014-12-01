@@ -222,6 +222,6 @@ void USBWakeUp_IRQHandler(void)
 void SDIO_IRQHandler(void)
 {
   /* Process All SDIO Interrupt Sources */
-  SD_ProcessIRQSrc();
+  // SD_ProcessIRQSrc();
 }
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
