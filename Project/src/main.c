@@ -37,7 +37,7 @@ static void periphInit()
 	USART_Config(BT_USART, BT_BaudRate);
 	Move_Init();
 	Toolhead_Init();
-	// USBDevice_Config();
+	USBDevice_Config();
 	Command_Init();
 	HostCtrl_Init(Debug_USART);
 }
@@ -96,6 +96,8 @@ int main(void)
 	periphInit();
 
 	DBG_MSG("Peripheral init done.", 0);
+
+	USBDevice_Connect();
 
 	while (1)
 	{

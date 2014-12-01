@@ -84,9 +84,11 @@
 #define LED_1 GPIO_Pin_8
 #define LED_2 GPIO_Pin_9
 
-#define USB_Port GPIOA
-#define USB_Det  GPIO_Pin_15
-#define USB_Conn GPIO_Pin_8
+#define USB_Port GPIOB
+#define USB_Det  GPIO_Pin_13
+#define RCC_APB2Periph_GPIO_DISCONNECT RCC_APB2Periph_GPIOB
+#define USB_DISCONNECT GPIOB
+#define USB_DISCONNECT_PIN GPIO_Pin_14
 
 #define SD_DETECT_PIN                    GPIO_Pin_7
 #define SD_DETECT_GPIO_PORT              GPIOC
