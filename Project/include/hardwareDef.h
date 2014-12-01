@@ -21,8 +21,6 @@
 
 #define Debug_USART USART1
 #define Debug_BaudRate 115200
-#define BT_USART USART3
-#define BT_BaudRate 9600
 
 #define Pickup_Pin GPIO_Pin_1
 #define Pickup_Port GPIOA

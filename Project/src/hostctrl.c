@@ -19,12 +19,12 @@
 #include "common.h"
 #include "systick.h"
 #include "hostctrl.h"
-#include "usart.h"
 #include "led.h"
 #include "command.h"
 #include "move.h"
 #include "vacuum.h"
 #include "toolhead.h"
+#include "usbcdc_io.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -39,16 +39,13 @@ static char cmd_buf[CMD_BUF_LEN], param_buf[PARAM_BUF_LEN];
 // 运动结束后报告
 static bool move_pending_report, toolhead_pending_report;
 
-static USART_TypeDef* hostctrl_usart;
+#define REPORT(info_type, format, ...) USB_CDC_printf("!I#%s#" format "\r\n", info_type, __VA_ARGS__)
 
-#define REPORT(info_type, format, ...) USART_printf(hostctrl_usart, "!I#%s#" format "\r\n", info_type, __VA_ARGS__)
-
-void HostCtrl_Init(USART_TypeDef * usart)
+void HostCtrl_Init()
 {
 	// USART_RxInt_Config(true);
 	parse_stage = PARSE_INITIAL;
 	cmd_received = false;
-	hostctrl_usart = usart;
 }
 
 bool HostCtrl_GetCmd(char **p_cmd, char **p_param)
@@ -114,7 +111,7 @@ static void reportCoordinate()
 static void reportMoveEnded()
 {
 	bool flag = false;
-	if(move_pending_report && Move_isReady()){
+	if(move_pending_report && Move_XY_Ready()){
 		move_pending_report = false;
 		flag = true;
 		REPORT(INFO_DONE, "%s", "move");
@@ -144,7 +141,6 @@ static void reportState()
 //处理上位机请求
 static void processRequest(char* cmd, char* param)
 {
-	static char (*files)[][SD_MAX_FILENAME_LEN] = NULL;
 	DBG_MSG("Cmd: %s, Param: %s", cmd, param);
 	if(strcmp(cmd, "QRY") == 0){
 		reportState();
@@ -176,7 +172,7 @@ static void processRequest(char* cmd, char* param)
 				tmp = *param-'X';
 				val[tmp] = atoi(param+1);
 				Motor_PowerOn();
-				result = Move_RelativeMove(val);
+				result = Move_RelativeMove(val, DEFAULT_FEEDRATE);
 				move_pending_report = true;
 				break;
 			case 'Z':
@@ -203,7 +199,7 @@ static void processRequest(char* cmd, char* param)
 			DBG_MSG("Absolute Move %d,%d", xy[0], xy[1]);
 			move_pending_report = true;
 			Motor_PowerOn();
-			Move_AbsoluteMove(xy);
+			Move_AbsoluteMove(xy, DEFAULT_FEEDRATE);
 		}
 	}else if(strcmp(cmd, "ABSZ") == 0){
 		int z = atoi(param);
@@ -254,18 +250,11 @@ static void fetchHostCmd(void)
 
 void HostCtrl_Task(void)
 {
-	if(USART_GetFlagStatus(hostctrl_usart, USART_FLAG_RXNE) == SET){
-		uint8_t byte = USART_getchar(hostctrl_usart);
-		parse_host_cmd(byte);
-	}
-
 	fetchHostCmd();
 	reportMoveEnded();
 }
 
-void HostCtrl_Interrupt(void)
+void HostCtrl_Recv_Interrupt(uint8_t byte)
 {
-	uint8_t byte = USART_getchar(hostctrl_usart);
-	USART_putchar(hostctrl_usart, byte);
-	USART_ClearITPendingBit(hostctrl_usart, USART_FLAG_RXNE);
+	parse_host_cmd(byte);
 }

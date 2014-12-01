@@ -33,7 +33,8 @@
 #include "usb_prop.h"
 #include "usb_desc.h"
 #include "usb_pwr.h"
-
+#include "common.h"
+#include "hostctrl.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -63,17 +64,7 @@ extern LINE_CODING linecoding;
 *******************************************************************************/
 void USART_USB_Config_Default(void)
 {
-  USART_Config(USB_CDC_USART, 9600);
 
-  /* Enable the USART Receive interrupt */
-  USART_ITConfig(USB_CDC_USART, USART_IT_RXNE, ENABLE);
-
-  /* Enable USART Interrupt */
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannel = USB_CDC_USART_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_Init(&NVIC_InitStructure);
 }
 
 /*******************************************************************************
@@ -86,77 +77,6 @@ void USART_USB_Config_Default(void)
 *******************************************************************************/
 bool USART_USB_Config(void)
 {
-
-  /* set the Stop bit*/
-  switch (linecoding.format)
-  {
-    case 0:
-      USART_InitStructure.USART_StopBits = USART_StopBits_1;
-      break;
-    case 1:
-      USART_InitStructure.USART_StopBits = USART_StopBits_1_5;
-      break;
-    case 2:
-      USART_InitStructure.USART_StopBits = USART_StopBits_2;
-      break;
-    default :
-    {
-      USART_USB_Config_Default();
-      return (FALSE);
-    }
-  }
-
-  /* set the parity bit*/
-  switch (linecoding.paritytype)
-  {
-    case 0:
-      USART_InitStructure.USART_Parity = USART_Parity_No;
-      break;
-    case 1:
-      USART_InitStructure.USART_Parity = USART_Parity_Even;
-      break;
-    case 2:
-      USART_InitStructure.USART_Parity = USART_Parity_Odd;
-      break;
-    default :
-    {
-      USART_USB_Config_Default();
-      return (FALSE);
-    }
-  }
-
-  /*set the data type : only 8bits and 9bits is supported */
-  switch (linecoding.datatype)
-  {
-    case 0x07:
-      /* With this configuration a parity (Even or Odd) should be set */
-      USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-      break;
-    case 0x08:
-      if (USART_InitStructure.USART_Parity == USART_Parity_No)
-      {
-        USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-      }
-      else 
-      {
-        USART_InitStructure.USART_WordLength = USART_WordLength_9b;
-      }
-      
-      break;
-    default :
-    {
-      USART_USB_Config_Default();
-      return (FALSE);
-    }
-  }
-
-  USART_InitStructure.USART_BaudRate = linecoding.bitrate;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
- 
-  /* Configure and enable the USART */
-  USART_Init(USB_CDC_USART, &USART_InitStructure); 
-  USART_Cmd(USB_CDC_USART, ENABLE);
 
   return (TRUE);
 }
@@ -172,11 +92,11 @@ void USB_To_USART_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes)
 {
   
   uint32_t i;
-  
+
+  DBG_MSG("Len %d", Nb_bytes);
   for (i = 0; i < Nb_bytes; i++)
   {
-    USART_SendData(USB_CDC_USART, *(data_buffer + i));
-    while(USART_GetFlagStatus(USB_CDC_USART, USART_FLAG_TXE) == RESET); 
+    HostCtrl_Recv_Interrupt(*(data_buffer + i));
   }  
 }
 
@@ -243,25 +163,25 @@ void Handle_USBAsynchXfer (void)
 * Input          : None.
 * Return         : none.
 *******************************************************************************/
-void USART_To_USB_Send_Data(void)
+void USART_To_USB_Send_Data(uint8_t byte)
 {
-  
-  if (linecoding.datatype == 7)
-  {
-    USART_Rx_Buffer[USART_Rx_ptr_in] = USART_ReceiveData(USB_CDC_USART) & 0x7F;
-  }
-  else if (linecoding.datatype == 8)
-  {
-    USART_Rx_Buffer[USART_Rx_ptr_in] = USART_ReceiveData(USB_CDC_USART);
-  }
-  
-  USART_Rx_ptr_in++;
-  
-  /* To avoid buffer overflow */
-  if(USART_Rx_ptr_in == USART_RX_DATA_SIZE)
-  {
-    USART_Rx_ptr_in = 0;
-  }
+
+    if (linecoding.datatype == 7)
+    {
+      USART_Rx_Buffer[USART_Rx_ptr_in] = byte & 0x7F;
+    }
+    else if (linecoding.datatype == 8)
+    {
+      USART_Rx_Buffer[USART_Rx_ptr_in] = byte;
+    }
+    
+    USART_Rx_ptr_in++;
+    
+    /* To avoid buffer overflow */
+    if(USART_Rx_ptr_in == USART_RX_DATA_SIZE)
+    {
+      USART_Rx_ptr_in = 0;
+    }
 }
 
 

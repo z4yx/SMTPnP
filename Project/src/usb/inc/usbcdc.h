@@ -45,16 +45,12 @@
 // #define LED_ON                0xF0
 // #define LED_OFF               0xFF
 
-#define USB_CDC_USART USART2
-#define USB_CDC_USART_IRQn USART2_IRQn
-#define USBCDC_USART_IRQHandler USART2_IRQHandler
-
 #define USART_RX_DATA_SIZE   2048
 /* Exported functions ------------------------------------------------------- */
 void USART_USB_Config_Default(void);
 bool USART_USB_Config(void);
 void USB_To_USART_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes);
-void USART_To_USB_Send_Data(void);
+void USART_To_USB_Send_Data(uint8_t byte);
 void Handle_USBAsynchXfer (void);
 
 /* External variables --------------------------------------------------------*/

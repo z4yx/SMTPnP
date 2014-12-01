@@ -3,9 +3,9 @@
 
 #include "stm32f10x.h"
 
-void HostCtrl_Init(USART_TypeDef * usart);
+void HostCtrl_Init();
 bool HostCtrl_GetCmd(char **p_cmd, char **p_param);
-void HostCtrl_Interrupt(void);
+void HostCtrl_Recv_Interrupt(uint8_t byte);
 void HostCtrl_CmdProcessed(void);
 
 #define INFO_LIST_FILES  "LIST"

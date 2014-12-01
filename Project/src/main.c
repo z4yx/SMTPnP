@@ -34,12 +34,11 @@ const Task_t SystemTasks[] = { LimitSwitch_Task, HostCtrl_Task};
 static void periphInit()
 {
 	Vacuum_Config();
-	USART_Config(BT_USART, BT_BaudRate);
 	Move_Init();
 	Toolhead_Init();
 	USBDevice_Config();
 	Command_Init();
-	HostCtrl_Init(Debug_USART);
+	HostCtrl_Init();
 }
 
 void useHSIClock()
