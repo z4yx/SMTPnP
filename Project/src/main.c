@@ -28,7 +28,7 @@
 #include "vacuum.h"
 #include "hostctrl.h"
 
-const Task_t SystemTasks[] = { LimitSwitch_Task, HostCtrl_Task};
+const Task_t SystemTasks[] = { LimitSwitch_Task, HostCtrl_Task, Command_Task};
 
 
 static void periphInit()
@@ -95,8 +95,6 @@ int main(void)
 	periphInit();
 
 	DBG_MSG("Peripheral init done.", 0);
-
-	USBDevice_Connect();
 
 	while (1)
 	{

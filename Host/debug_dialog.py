@@ -41,12 +41,12 @@ class DebugDialog(wx.Dialog):
 
     def createBtns(self):
         self.Btns = {
-            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 1),
-            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -1),
-            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 1),
-            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -1),
-            xrc.XRCID("ZPlus"): (self.onRMoveClick, "Z", 1),
-            xrc.XRCID("ZMinus"): (self.onRMoveClick, "Z", -1),
+            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 2000),
+            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -2000),
+            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 2000),
+            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -2000),
+            xrc.XRCID("ZPlus"): (self.onRMoveClick, "Z", 100),
+            xrc.XRCID("ZMinus"): (self.onRMoveClick, "Z", -100),
             xrc.XRCID("Rotate"): (self.onRotateClick, "A"),
             xrc.XRCID("SetCur"): (self.onCoordSetClick, "cur"),
             xrc.XRCID("SetZero"): (self.onCoordSetClick, "zero"),
@@ -95,8 +95,7 @@ class DebugDialog(wx.Dialog):
     def onRMoveClick(self, event):
         _id = event.GetId()
         _param = self.Btns[_id]
-        value = 50
-        comm.SendDebugCommand(_param[1], _param[2] * value)
+        comm.SendDebugCommand(_param[1], _param[2])
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

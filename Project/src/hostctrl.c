@@ -127,14 +127,10 @@ static void reportMoveEnded()
 
 static void reportState()
 {
-	uint8_t b;
-	// int16_t temp;
 	uint16_t state;
-	uint8_t progress;
-	// int output;
 
-	Command_GetState(&b, &state, &progress);
-	REPORT(INFO_PRINT, "%d,%d,%d", (int)b, (int)state, (int)progress);
+	Command_GetState(&state);
+	REPORT(INFO_PRINT, "%d", (int)state);
 
 }
 

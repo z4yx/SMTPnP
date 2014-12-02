@@ -5,5 +5,6 @@
 
 void Vacuum_Config(void);
 void Vacuum_Pick(bool bEnabled);
+void Vacuum_Pump_On(bool bEnabled);
 
 #endif

@@ -1,5 +1,5 @@
 
-SERIAL_NAME = '/dev/cu.usbserial-AH0298NJ'
+SERIAL_NAME = '/dev/cu.usbmodem621'
 SERIAL_BAUD = 115200
 
 MACH_MAX_X = 350000
