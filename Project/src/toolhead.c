@@ -20,6 +20,7 @@
 #include "motor.h"
 #include "toolhead.h"
 #include "systick.h"
+#include "move.h"
 
 //当前电机旋转角度,单位为步进数
 static int currentPos;
@@ -56,7 +57,7 @@ bool Toolhead_Rotate(int16_t degree)
 	int d = A_PULSES_PER_CYCLE;
 	d = d * degree / 360;
 	RotaterRunning = true;
-	Motor_Start(A_Axis, abs(d), 1, (d > 0 ? Move_Dir_Forward : Move_Dir_Back));
+	Motor_Start(A_Axis, abs(d), (d > 0 ? Move_Dir_Forward : Move_Dir_Back), A_PULSE_FREQ);
 
 	return true;
 }
@@ -73,7 +74,7 @@ bool Toolhead_Z_Relative(int steps)
 
 	if(steps){
 		ZRunning = true;
-		Motor_Start(Z_Axis, abs(steps), 1, (steps > 0 ? Move_Dir_Forward : Move_Dir_Back));
+		Motor_Start(Z_Axis, abs(steps), (steps > 0 ? Move_Dir_Forward : Move_Dir_Back), Z_PULSE_FREQ);
 	}
 
 	return true;

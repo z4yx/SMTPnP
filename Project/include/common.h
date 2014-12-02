@@ -42,6 +42,7 @@ extern void USART_printf(USART_TypeDef* USARTx, char *Data, ...);
 void RCC_GPIOClockCmd(GPIO_TypeDef* GPIOx, FunctionalState state);
 void RCC_USARTClockCmd(USART_TypeDef* USARTx, FunctionalState state);
 void Timer_16bit_Calc(int freq, uint16_t *period, uint16_t *prescaler);
+float Distance2D(float dx, float dy);
 
 typedef void (*Task_t)(void);
 
