@@ -165,6 +165,7 @@ void Handle_USBAsynchXfer (void)
 *******************************************************************************/
 void USART_To_USB_Send_Data(uint8_t byte)
 {
+    __disable_irq();
 
     if (linecoding.datatype == 7)
     {
@@ -182,6 +183,8 @@ void USART_To_USB_Send_Data(uint8_t byte)
     {
       USART_Rx_ptr_in = 0;
     }
+
+    __enable_irq();
 }
 
 
