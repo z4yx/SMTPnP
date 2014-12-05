@@ -46,7 +46,7 @@ bool LimitSwitch_Pressed(uint8_t sw)
 			ERR_MSG("Invalid switch number %d", sw);
 			return false;
 	}
-	return !val;
+	return val;
 }
 
 void LimitSwitch_Config(void)
