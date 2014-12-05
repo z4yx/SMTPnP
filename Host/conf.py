@@ -1,5 +1,5 @@
-
-SERIAL_NAME = '/dev/cu.usbmodem621'
+import glob
+SERIAL_NAME = glob.glob('/dev/cu.usbmodem*')[0]
 SERIAL_BAUD = 115200
 
 MACH_MAX_X = 350000
