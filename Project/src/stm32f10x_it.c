@@ -23,6 +23,7 @@
 extern void IncSysTickCounter(void);
 extern void LimitSwitch_Interrupt(void);
 extern void HostCtrl_Interrupt(void);
+void Move_RecEncInterrupt(TIM_TypeDef *tim);
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -169,24 +170,34 @@ void EXTI15_10_IRQHandler(void)
 {
 }
 
-void TIM1_UP_IRQHandler(void)
-{
-    Motor_Interrupt(TIM1);
-}
-
 void TIM2_IRQHandler(void)
 {
-    Motor_Interrupt(TIM2);
+    Move_RecEncInterrupt(TIM2);
 }
 
 void TIM3_IRQHandler(void)
 {
-    Motor_Interrupt(TIM3);
+    Move_RecEncInterrupt(TIM3);
 }
 
 void TIM4_IRQHandler(void)
 {
     Motor_Interrupt(TIM4);
+}
+
+void TIM5_IRQHandler(void)
+{
+    Motor_Interrupt(TIM5);
+}
+
+void TIM6_IRQHandler(void)
+{
+    Motor_Interrupt(TIM6);
+}
+
+void TIM7_IRQHandler(void)
+{
+    Motor_Interrupt(TIM7);
 }
 
 void USART1_IRQHandler(void)

@@ -21,6 +21,7 @@
 #include "move.h"
 #include "systick.h"
 #include "limitSwitch.h"
+#include "rotary_encoder.h"
 #include <stdlib.h>
 
 #define MIN2SEC 60
@@ -31,6 +32,9 @@ static int currentPos[2];
 //当前位置(以电机的步进数量为单位)
 static int currentSteps[2];
 
+//编码器中断数，即旋转圈数
+static int reIntCount[2];
+
 //步进电机每个脉冲产生的位移
 static float um_per_pulse[2];
 
@@ -39,10 +43,40 @@ static volatile uint8_t currentState[2];
 
 static const int8_t motorDirFix[4] = {X_DIRECTION_ADJ, Y_DIRECTION_ADJ};
 
+void init_rotary_encoder()
+{
+	RotaryEnc_Config(RE_X_TIM, RE_X_PORT, RE_X_PINS, RE_PULSES*2);
+	RotaryEnc_ClearCounter(RE_X_TIM);
+	RotaryEnc_Config(RE_Y_TIM, RE_Y_PORT, RE_Y_PINS, RE_PULSES*2);
+	RotaryEnc_ClearCounter(RE_Y_TIM);
+
+	RotaryEnc_TIM_SetInterrupt(RE_X_TIM, RE_X_TIM_IRQ);
+	RotaryEnc_TIM_SetInterrupt(RE_Y_TIM, RE_Y_TIM_IRQ);
+}
+
+//旋转编码器测量的当前位置(以电机的步进数量为单位)
+int getMeasuredSteps(uint8_t axis)
+{
+	int scale;
+	uint16_t cnt;
+	if(axis == X_Axis){
+		scale = X_PULSES_PER_CYCLE/RE_PULSES;
+		cnt = RotaryEnc_GetCounter(RE_X_TIM);
+	}else if(axis == Y_Axis){
+		scale = Y_PULSES_PER_CYCLE/RE_PULSES;
+		cnt = RotaryEnc_GetCounter(RE_Y_TIM);
+	}else{
+		ERR_MSG("Unknown axis %d", axis);
+		return 0;
+	}
+	return scale*(reIntCount[axis]*RE_PULSES + cnt);
+}
+
 void Move_Init()
 {
 	Motor_Init();
 	LimitSwitch_Config();
+	init_rotary_encoder();
 
 	um_per_pulse[X_Axis] = (float)X_DISTANCE_PER_CYCLE / X_PULSES_PER_CYCLE;
 	um_per_pulse[Y_Axis] = (float)Y_DISTANCE_PER_CYCLE / Y_PULSES_PER_CYCLE;
@@ -75,13 +109,19 @@ static void homingDone(uint8_t axis)
 	currentPos[axis] = 0;
 	currentSteps[axis] = 0;
 	currentState[axis] = Axis_State_Ready;
+
+	RotaryEnc_ClearCounter(axis == X_Axis ? RE_X_TIM : RE_Y_TIM);
+	reIntCount[axis] = 0;
 }
 
 //步进运动完成,由电机中断调用
 void Move_Axis_Eneded(uint8_t axis)
 {
-	if(axis < 2)
+	if(axis < 2){
 		currentState[axis] = Axis_State_Ready;
+		DBG_MSG("Axis %d: expected=%d, measured=%d",
+			axis, currentSteps[axis], getMeasuredSteps(axis));
+	}
 }
 
 //三轴均处于待命状态
@@ -230,4 +270,15 @@ void Move_LimitReached(uint8_t sw_num)
 		// Motor_Stop(err_axis);
 		ERR_MSG("Limit switch on illegally! axis=%d, switch=%d", (int)err_axis, (int)sw_num);
 	}
+}
+
+void Move_RecEncInterrupt(TIM_TypeDef *tim)
+{
+    if (SET != TIM_GetITStatus(tim, TIM_IT_Update))
+    	return;
+    TIM_ClearITPendingBit(tim, TIM_IT_Update);
+    uint16_t cnt = RotaryEnc_GetCounter(tim);
+    uint8_t axis = (tim == RE_X_TIM ? X_Axis : Y_Axis);
+
+    reIntCount[axis] += (cnt < RE_PULSES/2) ? 1 : -1; //判断编码器是正转过0点还是反转
 }

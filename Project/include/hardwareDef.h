@@ -27,6 +27,16 @@
 #define Pump_Pin GPIO_Pin_6
 #define Pump_Port GPIOB
 
+#define RE_X_TIM     TIM2
+#define RE_X_TIM_IRQ TIM2_IRQn
+#define RE_X_PORT    GPIOA
+#define RE_X_PINS    (GPIO_Pin_0|GPIO_Pin_1)
+
+#define RE_Y_TIM     TIM3
+#define RE_Y_TIM_IRQ TIM3_IRQn
+#define RE_Y_PORT    GPIOA
+#define RE_Y_PINS    (GPIO_Pin_6|GPIO_Pin_7)
+
 #define X_Axis_Start_Pin GPIO_Pin_13
 #define X_Axis_Start_Port GPIOC
 #define X_Axis_Step_Pin GPIO_Pin_15
