@@ -10,6 +10,7 @@ bool Move_XY_Ready(void);
 bool Move_RelativeMove(int xyza[2], int feedrate);
 bool Move_AbsoluteMove(int xyza[2], int feedrate);
 bool Move_SetCurrentPos(int xyza[2]);
+void Move_GetPos(int *x, int *y);
 
 void Move_LimitReached(uint8_t sw_num);
 void Move_Axis_Eneded(uint8_t axis);

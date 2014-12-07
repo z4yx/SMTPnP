@@ -50,6 +50,7 @@ class DebugDialog(wx.Dialog):
             xrc.XRCID("Rotate"): (self.onRotateClick, "A"),
             xrc.XRCID("SetCur"): (self.onCoordSetClick, "cur"),
             xrc.XRCID("SetZero"): (self.onCoordSetClick, "zero"),
+            xrc.XRCID("HomeXY"): (self.onHomeXYClick, ),
         }
         for (btn_id, param) in self.Btns.items():
             self.Bind(wx.EVT_BUTTON, param[0], id=btn_id)
@@ -71,6 +72,9 @@ class DebugDialog(wx.Dialog):
         y = y / float(self.slider_y.GetMax()) * conf.MACH_MAX_Y
         print "onSliderChange {} {}".format(x, y)
         comm.SendAbsoluteXYMove(int(x), int(y))
+
+    def onHomeXYClick(self, evt):
+        comm.SendHomeXY()
 
     def onCoordSetClick(self, event):
         _id = event.GetId()

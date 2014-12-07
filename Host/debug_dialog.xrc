@@ -121,7 +121,7 @@
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxGridSizer">
-              <cols>2</cols>
+              <cols>3</cols>
               <rows>1</rows>
               <vgap>5</vgap>
               <hgap>3</hgap>
@@ -133,6 +133,11 @@
               <object class="sizeritem">
                 <object class="wxButton" name="SetZero">
                   <label>Set To Zero</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="HomeXY">
+                  <label>Home XY</label>
                 </object>
               </object>
             </object>

@@ -20,6 +20,8 @@
 #include "move.h"
 #include "motor.h"
 #include "usb.h"
+#include "toolhead.h"
+#include "hostctrl.h"
 
 //机器当前状态
 static uint16_t currentState;
@@ -64,14 +66,74 @@ void Command_Task(void)
 		case MACH_STATE_MANUAL:
 
 			break;
+		case MACH_STATE_XY_MOVE:
+			if(Move_XY_Ready()){
+				currentState = MACH_STATE_NORMAL;
+				HostCtrl_ReportOpDone("move");
+				HostCtrl_ReportCoordinate();
+			}
+			break;
+		case MACH_STATE_TOOLHEAD_ROTATE:
+			if(Toolhead_isReady()){
+				currentState = MACH_STATE_NORMAL;
+				HostCtrl_ReportOpDone("toolhead");
+				HostCtrl_ReportCoordinate();
+			}
+			break;
+		case MACH_STATE_TOOLHEAD_Z:
+			if(Toolhead_isReady()){
+				currentState = MACH_STATE_NORMAL;
+				HostCtrl_ReportOpDone("toolhead");
+				HostCtrl_ReportCoordinate();
+			}
+			break;
 	}
 }
 
-void Command_StartHoming(uint8_t axis)
+bool Command_StartHomingXY()
 {
+	if(currentState != MACH_STATE_NORMAL)
+		return false;
 	Motor_PowerOn();
-	Move_Home(axis);
+	Move_Home(X_Axis);
+	Move_Home(Y_Axis);
 	currentState = MACH_STATE_HOMING;
+	return true;
 }
 
+bool Command_AbsoluteMove(int xy[2], int feedrate)
+{
+	if(currentState != MACH_STATE_NORMAL)
+		return false;
+	Motor_PowerOn();
+	currentState = MACH_STATE_XY_MOVE;
+	return Move_AbsoluteMove(xy, feedrate);
+}
+
+bool Command_RelativeMove(int xy[2], int feedrate)
+{
+	if(currentState != MACH_STATE_NORMAL)
+		return false;
+	Motor_PowerOn();
+	currentState = MACH_STATE_XY_MOVE;
+	return Command_RelativeMove(xy, feedrate);
+}
+
+bool Command_Toolhead_Z_Absolute(int steps)
+{
+	if(currentState != MACH_STATE_NORMAL)
+		return false;
+	Motor_PowerOn();
+	currentState = MACH_STATE_TOOLHEAD_Z;
+	return Toolhead_Z_Absolute(steps);
+}
+
+bool Command_Toolhead_Rotate(int16_t degree)
+{
+	if(currentState != MACH_STATE_NORMAL)
+		return false;
+	Motor_PowerOn();
+	currentState = MACH_STATE_TOOLHEAD_ROTATE;
+	return Toolhead_Rotate(degree);
+}
 

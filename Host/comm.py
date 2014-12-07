@@ -108,6 +108,8 @@ def SendAbsoluteXYMove(x, y):
 def SendAbsoluteZMove(z_steps):
     SendCommand("ABSZ", '{}'.format(z_steps))
 
+def SendHomeXY():
+    SendCommand("HOMEXY", '')
 
 def SendToolheadRotate(degree):
     SendCommand("ROTATE", '{}'.format(degree))
