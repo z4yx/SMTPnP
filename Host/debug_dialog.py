@@ -41,10 +41,10 @@ class DebugDialog(wx.Dialog):
 
     def createBtns(self):
         self.Btns = {
-            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 2000),
-            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -2000),
-            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 2000),
-            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -2000),
+            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 20000),
+            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -20000),
+            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 20000),
+            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -20000),
             xrc.XRCID("ZPlus"): (self.onRMoveClick, "Z", 100),
             xrc.XRCID("ZMinus"): (self.onRMoveClick, "Z", -100),
             xrc.XRCID("Rotate"): (self.onRotateClick, "A"),
