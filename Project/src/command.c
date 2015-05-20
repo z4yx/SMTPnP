@@ -116,7 +116,7 @@ bool Command_RelativeMove(int xy[2], int feedrate)
 		return false;
 	Motor_PowerOn();
 	currentState = MACH_STATE_XY_MOVE;
-	return Command_RelativeMove(xy, feedrate);
+	return Move_RelativeMove(xy, feedrate);
 }
 
 bool Command_Toolhead_Z_Absolute(int steps)
