@@ -201,26 +201,7 @@ void USART_printf(USART_TypeDef* USARTx, char *Data, ...)
 
     while ( *Data != 0)
     {
-        if ( *Data == '\\' )
-        {
-            switch ( *++Data )
-            {
-            case 'r':
-                USART_SendData(USARTx, 0x0d);
-                Data ++;
-                break;
-
-            case 'n':
-                USART_SendData(USARTx, 0x0a);
-                Data ++;
-                break;
-
-            default:
-                Data ++;
-                break;
-            }
-        }
-        else if ( *Data == '%')
+        if ( *Data == '%')
         {
             switch ( *++Data )
             {
