@@ -211,6 +211,8 @@ static void fetchHostCmd(void)
 
 		LED_Enable(LED1, led_state);
 		led_state = (led_state == LED_ON ? LED_OFF : LED_ON);
+
+		DBG_MSG("Heartbeat");
 	}
 
 	if(HostCtrl_GetCmd(&p_cmd, &p_param)){

@@ -82,6 +82,7 @@ void Move_Axis_Eneded(uint8_t axis)
 {
 	if(axis < 2)
 		currentState[axis] = Axis_State_Ready;
+	DBG_MSG("Axis %d Ended", (int)axis);
 }
 
 //三轴均处于待命状态

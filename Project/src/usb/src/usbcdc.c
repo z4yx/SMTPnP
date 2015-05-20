@@ -150,6 +150,7 @@ void Handle_USBAsynchXfer (void)
       USART_Rx_ptr_out += USART_Rx_length;
       USART_Rx_length = 0;
     }
+    DBG_MSG("len=%d",USB_Tx_length);
     USB_Tx_State = 1; 
     UserToPMABufferCopy(&USART_Rx_Buffer[USB_Tx_ptr], ENDP1_TXADDR, USB_Tx_length);
     SetEPTxCount(ENDP1, USB_Tx_length);
