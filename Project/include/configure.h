@@ -33,7 +33,7 @@
 //Y轴步进电机旋转一周需要的脉冲数量(考虑细分)
 #define Y_PULSES_PER_CYCLE (16*200)
 //Y轴运行方向调整(取值+/-1)
-#define Y_DIRECTION_ADJ      -1
+#define Y_DIRECTION_ADJ      1
 
 //A轴(贴片头旋转)步进电机旋转一周需要的脉冲数量(考虑细分)
 #define A_PULSES_PER_CYCLE (16*200)
