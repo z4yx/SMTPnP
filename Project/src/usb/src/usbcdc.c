@@ -93,7 +93,7 @@ void USB_To_USART_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes)
   
   uint32_t i;
 
-  DBG_MSG("Len %d", Nb_bytes);
+  // DBG_MSG("Len %d", Nb_bytes);
   for (i = 0; i < Nb_bytes; i++)
   {
     HostCtrl_Recv_Interrupt(*(data_buffer + i));
@@ -150,7 +150,7 @@ void Handle_USBAsynchXfer (void)
       USART_Rx_ptr_out += USART_Rx_length;
       USART_Rx_length = 0;
     }
-    DBG_MSG("len=%d",USB_Tx_length);
+    // DBG_MSG("len=%d",USB_Tx_length);
     USB_Tx_State = 1; 
     UserToPMABufferCopy(&USART_Rx_Buffer[USB_Tx_ptr], ENDP1_TXADDR, USB_Tx_length);
     SetEPTxCount(ENDP1, USB_Tx_length);
