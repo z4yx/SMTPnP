@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 import glob
-SERIAL_NAME = glob.glob('/dev/ttyACM0')[0]
-SERIAL_BAUD = 115200
+
+USE_NET = True
+
+NETWORK_IP = '192.168.1.1'
+NETWORK_PORT = 2001
+
+# SERIAL_NAME = glob.glob('/dev/cu.usb*')[0]
+# SERIAL_BAUD = 115200
 
 MACH_MAX_X = 1000000
 MACH_MAX_Y = 1000000

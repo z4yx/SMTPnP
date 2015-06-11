@@ -1,4 +1,5 @@
 import serial
+import socket
 import threading
 import conf
 import wx
@@ -69,7 +70,12 @@ class RecvThread4queue(RecvThread):
 def Init(win=None, queue=None):
     global _com, _thread
     assert(win or queue)
-    _com = serial.Serial(conf.SERIAL_NAME, conf.SERIAL_BAUD)
+    if conf.USE_NET:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((conf.NETWORK_IP, conf.NETWORK_PORT))
+        _com = s.makefile()
+    else:
+        _com = serial.Serial(conf.SERIAL_NAME, conf.SERIAL_BAUD)
     if win:
         _thread = RecvThread4wx(win)
     elif queue:
