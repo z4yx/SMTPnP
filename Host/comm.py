@@ -73,7 +73,8 @@ def Init(win=None, queue=None):
     if conf.USE_NET:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((conf.NETWORK_IP, conf.NETWORK_PORT))
-        _com = s.makefile()
+        _com = s.makefile('rw',32)
+        
     else:
         _com = serial.Serial(conf.SERIAL_NAME, conf.SERIAL_BAUD)
     if win:
@@ -89,6 +90,7 @@ def Write(data):
     if d < 0.1:
         time.sleep(0.1 - d)
     _com.write(data)
+    _com.flush()
     last_sent = time.clock()
 
 def SendCommand(name, param):
