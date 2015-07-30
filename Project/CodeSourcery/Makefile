@@ -21,7 +21,7 @@
 # by Martin Thomas, Kaiserslautern, Germany 
 # <eversmith@heizung-thomas.de>
 #
-# based on the WinAVR makefile written by Eric B. Weddington, Jörg Wunsch, et al.
+# based on the WinAVR makefile written by Eric B. Weddington, Jorg Wunsch, et al.
 # Released to the Public Domain
 # Please read the make user manual!
 #
@@ -88,6 +88,7 @@ SRC_DIR = ../
 # use file-extension c for "c-only"-files
 
 # SRC files
+SRC += $(wildcard $(SRC_DIR)../Libraries/CMSIS/Device/ST/STM32F10x/Source/Templates/system_stm32f10x.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/*.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_USB-FS-Device_Driver/src/*.c)
 SRC += $(wildcard $(SRC_DIR)../Project/src/*.c)
@@ -152,8 +153,8 @@ EXTRAINCDIRS = $(SRC_DIR)../Project/include
 EXTRAINCDIRS += $(SRC_DIR)../Project/src/usb/inc
 EXTRAINCDIRS += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/inc 
 EXTRAINCDIRS += $(SRC_DIR)../Libraries/STM32_USB-FS-Device_Driver/inc 
-EXTRAINCDIRS += $(SRC_DIR)../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
-EXTRAINCDIRS += $(SRC_DIR)../Libraries/CMSIS/CM3/CoreSupport
+EXTRAINCDIRS += $(SRC_DIR)../Libraries/CMSIS/Device/ST/STM32F10x/Include
+EXTRAINCDIRS += $(SRC_DIR)../Libraries/CMSIS/Include
 
 # List any extra directories to look for library files here.
 #     Each directory must be seperated by a space.

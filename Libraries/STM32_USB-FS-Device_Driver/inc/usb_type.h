@@ -38,14 +38,12 @@
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
-  
-#ifndef bool
-#define bool uint8_t
-#define true 1
-#define TRUE true
-#define false 0
-#define FALSE false
-#endif
+
+typedef enum
+{
+  FALSE = 0, TRUE  = !FALSE
+}
+bool;
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
