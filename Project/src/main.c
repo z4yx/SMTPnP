@@ -16,7 +16,6 @@
  * =====================================================================================
  */
 
-#include "stm32f10x.h"
 #include "common.h"
 #include "led.h"
 #include "usart.h"
@@ -41,27 +40,6 @@ static void periphInit()
 	HostCtrl_Init();
 }
 
-void useHSIClock()
-{
-	// RCC_HSEConfig(RCC_HSE_ON);
-	// while(RCC_GetFlagStatus(RCC_FLAG_HSERDY) == RESET)//等待HSE使能成功
-	// {
-	// }
-	RCC_HSICmd(ENABLE);
-	while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);//等待HSI使能成功
-
-	RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
-
-	RCC_PLLCmd(DISABLE);
-	RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_10);
-
-	RCC_PLLCmd(ENABLE);
-	while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
-
-	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-	while(RCC_GetSYSCLKSource() != 0x08);
-}
-
 //核心组件初始化,包括串口(用于打印调试信息)
 static void coreInit()
 {
@@ -76,7 +54,6 @@ static void coreInit()
 int main(void)
 {
 	RCC_ClocksTypeDef clocks;
-	// useHSIClock();
 	RCC_PCLK1Config(RCC_HCLK_Div1);
 	RCC_GetClocksFreq(&clocks);
 

@@ -1,7 +1,7 @@
 #ifndef __USART_H
 #define	__USART_H
 
-#include "stm32f10x.h"
+#include "common.h"
 
 void USART_Config(USART_TypeDef* USARTx, u32 USART_BaudRate);
 void USART_RxInt_Config(bool bEnabled);
