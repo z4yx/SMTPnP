@@ -16,7 +16,6 @@
  * =====================================================================================
  */
 
-#include "stm32f10x.h"
 #include "common.h"
 #include "usart.h"
 #include <stdarg.h>
@@ -30,22 +29,39 @@ void USART_Config(USART_TypeDef* USARTx, u32 USART_BaudRate)
     USART_InitTypeDef USART_InitStructure;
     GPIO_TypeDef *USART_GPIO;
     u16 USART_Rx, USART_Tx;
+    uint16_t PinSource_Rx, PinSource_Tx;
+    uint8_t  GPIO_AF;
 
     switch((u32)USARTx) {
         case (u32)USART1:
             USART_GPIO = GPIOA;
             USART_Tx = GPIO_Pin_9;
             USART_Rx = GPIO_Pin_10;
+            PinSource_Tx = GPIO_PinSource9;
+            PinSource_Rx = GPIO_PinSource10;
+#ifdef IS_GPIO_OTYPE //New GPIO peripheral
+            GPIO_AF  = GPIO_AF_USART1;
+#endif
             break;
         case (u32)USART2:
             USART_GPIO = GPIOA;
             USART_Tx = GPIO_Pin_2;
             USART_Rx = GPIO_Pin_3;
+            PinSource_Tx = GPIO_PinSource2;
+            PinSource_Rx = GPIO_PinSource3;
+#ifdef IS_GPIO_OTYPE //New GPIO peripheral
+            GPIO_AF  = GPIO_AF_USART2;
+#endif
             break;
         case (u32)USART3:
             USART_GPIO = GPIOB;
             USART_Tx = GPIO_Pin_10;
             USART_Rx = GPIO_Pin_11;
+            PinSource_Tx = GPIO_PinSource10;
+            PinSource_Rx = GPIO_PinSource11;
+#ifdef IS_GPIO_OTYPE //New GPIO peripheral
+            GPIO_AF  = GPIO_AF_USART3;
+#endif
             break;
 
         default:
@@ -57,14 +73,30 @@ void USART_Config(USART_TypeDef* USARTx, u32 USART_BaudRate)
 
     /* USART GPIO config */
     RCC_GPIOClockCmd(USART_GPIO, ENABLE);
+#ifdef IS_GPIO_OTYPE //New GPIO peripheral
+    GPIO_PinAFConfig(USART_GPIO, PinSource_Rx, GPIO_AF);
+    GPIO_PinAFConfig(USART_GPIO, PinSource_Tx, GPIO_AF);
+#endif
     /* Configure USART Tx as alternate function push-pull */
     GPIO_InitStructure.GPIO_Pin = USART_Tx;
+#ifdef IS_GPIO_OTYPE //New GPIO peripheral
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+#else
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+#endif
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(USART_GPIO, &GPIO_InitStructure);
     /* Configure USART Rx as input*/
     GPIO_InitStructure.GPIO_Pin = USART_Rx;
+#ifdef IS_GPIO_OTYPE //New GPIO peripheral
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+#else
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+#endif
     GPIO_Init(USART_GPIO, &GPIO_InitStructure);
 
     /* USART mode config */

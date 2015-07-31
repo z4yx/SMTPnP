@@ -16,7 +16,6 @@
  * =====================================================================================
  */
 
-#include "stm32f10x.h"
 #include "common.h"
 #include "vacuum.h"
 
@@ -29,7 +28,14 @@ void Vacuum_Config()
 	RCC_GPIOClockCmd(Pump_Port, ENABLE); 
 
 	GPIO_InitStructure.GPIO_Pin =  Pickup_Pin;
+#ifdef IS_GPIO_OTYPE 
+    //New GPIO peripheral
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+#else
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+#endif
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
 	GPIO_Init(Pickup_Port, &GPIO_InitStructure);

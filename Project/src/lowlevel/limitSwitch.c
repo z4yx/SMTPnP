@@ -52,7 +52,14 @@ bool LimitSwitch_Pressed(uint8_t sw)
 void LimitSwitch_Config(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
+#ifdef IS_GPIO_OTYPE 
+    //New GPIO peripheral
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+#else
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+#endif
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
 	RCC_GPIOClockCmd(X_Axis_Min_Port, ENABLE);

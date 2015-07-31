@@ -26,7 +26,14 @@ void USBDevice_Config()
 
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Pin = USB_Det;
+#ifdef IS_GPIO_OTYPE 
+    //New GPIO peripheral
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+#else
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;         /* 下拉输入 */
+#endif
     GPIO_Init(USB_Port, &GPIO_InitStructure);
 
     USBCommon_Init();
