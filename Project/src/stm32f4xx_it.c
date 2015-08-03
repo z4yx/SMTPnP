@@ -31,6 +31,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
+#include "usb_core.h"
+#include "usbd_core.h"
 
 extern void IncSysTickCounter(void);
 
@@ -42,7 +44,9 @@ extern void IncSysTickCounter(void);
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
 /* Private function prototypes -----------------------------------------------*/
+extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 /* Private functions ---------------------------------------------------------*/
 
 /******************************************************************************/
@@ -162,6 +166,16 @@ void SysTick_Handler(void)
 /*void PPP_IRQHandler(void)
 {
 }*/
+
+void OTG_FS_WKUP_IRQHandler(void)
+{
+
+}
+
+void OTG_FS_IRQHandler(void)
+{
+  USBD_OTG_ISR_Handler (&USB_OTG_dev);
+}
 
 /**
   * @}
