@@ -91,7 +91,6 @@ SRC_DIR = ../
 AVAILBLE_PERIPH := stm32f4xx_adc.c stm32f4xx_crc.c stm32f4xx_dbgmcu.c stm32f4xx_dma.c stm32f4xx_exti.c stm32f4xx_flash.c stm32f4xx_gpio.c stm32f4xx_i2c.c stm32f4xx_iwdg.c stm32f4xx_pwr.c stm32f4xx_rcc.c stm32f4xx_rtc.c stm32f4xx_sdio.c stm32f4xx_spi.c stm32f4xx_syscfg.c stm32f4xx_tim.c stm32f4xx_usart.c stm32f4xx_wwdg.c misc.c stm32f4xx_flash_ramfunc.c
 SRC += $(wildcard $(SRC_DIR)../Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c)
 SRC += $(addprefix $(SRC_DIR)../Libraries/STM32F4xx_StdPeriph_Driver/src/, $(AVAILBLE_PERIPH))
-SRC += $(wildcard $(SRC_DIR)../Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c)
 SRC += $(addprefix $(SRC_DIR)../Libraries/STM32_USB_OTG_Driver/src/, usb_core.c usb_dcd.c usb_dcd_int.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_USB_Device_Library/Core/src/*.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_USB_Device_Library/Class/cdc/src/*.c)
