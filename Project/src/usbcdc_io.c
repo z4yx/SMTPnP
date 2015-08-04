@@ -1,6 +1,5 @@
 #include "usbcdc_io.h"
 #include <stdarg.h>
-#include "usbcdc.h"
 
 /*
  * 数值转字符串函数

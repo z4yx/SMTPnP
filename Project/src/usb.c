@@ -90,7 +90,7 @@ void USBDevice_Disconnect()
 {
     DBG_MSG("called", 0);
 #ifndef RCC_AHB2ENR_OTGFSEN //stm32f4xx
-    USB_Interrupts_Config(DISABLE);
+    // USB_Interrupts_Config(DISABLE);
     USB_Cable_Config(DISABLE);
 #endif
 }

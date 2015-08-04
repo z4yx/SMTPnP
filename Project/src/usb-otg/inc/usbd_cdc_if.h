@@ -35,12 +35,24 @@
 #include "usbd_cdc_core.h"
 
 /* Exported types ------------------------------------------------------------*/
+  /* The following structures groups all needed parameters to be configured for the 
+   ComPort. These parameters can modified on the fly by the host through CDC class
+   command class requests. */
+typedef struct
+{
+  uint32_t bitrate;
+  uint8_t  format;
+  uint8_t  paritytype;
+  uint8_t  datatype;
+}LINE_CODING;
 /* Exported constants --------------------------------------------------------*/
 
 extern CDC_IF_Prop_TypeDef  APP_FOPS;
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void USART_To_USB_Send_Data(uint8_t byte);
+
 #endif /* __USBD_CDC_IF_TEMPLATE_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
