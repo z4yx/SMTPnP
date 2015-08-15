@@ -51,10 +51,30 @@ static void coreInit()
 	USART_Config(Debug_USART, Debug_BaudRate);
 }
 
+static void ChangeClockConfig(void)
+{
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
+	SystemCoreClock = HSI_VALUE;
+
+	RCC_HSEConfig(RCC_HSE_ON);
+	while(RCC_WaitForHSEStartUp() != SUCCESS);
+
+	RCC_PLLCmd(DISABLE);
+	RCC_PLLConfig(RCC_PLLSource_HSI, HSI_VALUE/1000000, 336, 4, 7);
+	RCC_PLLCmd(ENABLE);
+	while((RCC->CR & RCC_CR_PLLRDY) == 0);
+
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+	SystemCoreClock = 1000000u*336/4;
+}
+
 int main(void)
 {
 	RCC_ClocksTypeDef clocks;
-	RCC_PCLK1Config(RCC_HCLK_Div1);
+#ifdef STM32F411xE
+	ChangeClockConfig();
+#endif
+
 	RCC_GetClocksFreq(&clocks);
 
 	coreInit();
