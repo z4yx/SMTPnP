@@ -31,6 +31,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_if.h"
+#include "common.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -82,6 +83,7 @@ static uint16_t TEMPLATE_Init(void)
   /*
      Add your initialization code here 
   */  
+  DBG_MSG("called");
   return USBD_OK;
 }
 
@@ -96,6 +98,7 @@ static uint16_t TEMPLATE_DeInit(void)
   /*
      Add your deinitialization code here 
   */  
+  DBG_MSG("called");
   return USBD_OK;
 }
 
@@ -110,6 +113,7 @@ static uint16_t TEMPLATE_DeInit(void)
   */
 static uint16_t TEMPLATE_Ctrl (uint32_t Cmd, uint8_t* Buf, uint32_t Len)
 { 
+  DBG_MSG("called Cmd=%d",Cmd);
   switch (Cmd)
   {
   case SEND_ENCAPSULATED_COMMAND:

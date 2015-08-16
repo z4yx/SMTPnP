@@ -159,7 +159,7 @@ void USBD_USR_DeviceConfigured (void)
 */
 void USBD_USR_DeviceSuspended(void)
 {
-  DBG_MSG("USB Device in Suspend Mode.");
+  // DBG_MSG("USB Device in Suspend Mode.");
   /* Users can do their application actions here for the USB-Reset */
 }
 

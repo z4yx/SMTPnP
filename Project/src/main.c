@@ -26,6 +26,7 @@
 #include "command.h"
 #include "vacuum.h"
 #include "hostctrl.h"
+#include "usb.h"
 
 const Task_t SystemTasks[] = { LimitSwitch_Task, HostCtrl_Task, Command_Task};
 
@@ -82,6 +83,7 @@ int main(void)
 	Delay_ms(1000);
 
 	DBG_MSG("\r\n\r\n", 0);
+	DBG_MSG("PLL Config: %d", RCC->PLLCFGR);
 	DBG_MSG("Clock Source: %d", RCC_GetSYSCLKSource());
 	DBG_MSG("SYSCLK: %d, H: %d, P1: %d, P2: %d",
 		clocks.SYSCLK_Frequency,
