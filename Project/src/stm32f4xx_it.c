@@ -167,6 +167,28 @@ void SysTick_Handler(void)
 {
 }*/
 
+void TIM1_UP_TIM10_IRQHandler(void)
+{
+  if(SET == TIM_GetITStatus(TIM1, TIM_IT_Update)) {
+    Motor_Interrupt(TIM1);
+  }
+}
+
+void TIM2_IRQHandler(void)
+{
+  Motor_Interrupt(TIM2);
+}
+
+void TIM3_IRQHandler(void)
+{
+  Motor_Interrupt(TIM3);
+}
+
+void TIM4_IRQHandler(void)
+{
+  Motor_Interrupt(TIM4);
+}
+
 void OTG_FS_WKUP_IRQHandler(void)
 {
 
