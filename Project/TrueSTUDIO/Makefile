@@ -215,6 +215,7 @@ endif
 CFLAGS = -g$(DEBUG)
 CFLAGS += $(CDEFS) $(CINCS)
 CFLAGS += -O$(OPT)
+CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # CFLAGS += -mfix-cortex-m3-ldrd
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wall
