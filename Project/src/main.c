@@ -52,6 +52,7 @@ static void coreInit()
 	USART_Config(Debug_USART, Debug_BaudRate);
 }
 
+#ifdef STM32F411xE
 static void ChangeClockConfig(void)
 {
 	RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
@@ -68,6 +69,7 @@ static void ChangeClockConfig(void)
 	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
     while (RCC_GetSYSCLKSource() != 0x08);
 }
+#endif
 
 int main(void)
 {
@@ -84,7 +86,6 @@ int main(void)
 
 	DBG_MSG("\r\n\r\n", 0);
 	DBG_MSG("SystemCoreClock: %u", SystemCoreClock);
-	DBG_MSG("PLL Config: 0x%x", RCC->PLLCFGR);
 	DBG_MSG("Clock Source: %d", RCC_GetSYSCLKSource());
 	DBG_MSG("SYSCLK: %d, H: %d, P1: %d, P2: %d",
 		clocks.SYSCLK_Frequency,
