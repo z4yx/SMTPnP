@@ -88,7 +88,7 @@ void RCC_GPIOClockCmd(GPIO_TypeDef* GPIOx, FunctionalState state)
 			/* Invalid argument! */
 			return;
 	}
-	RCC_APB2PeriphClockCmd(rcc, state);
+	RCC_AHB1PeriphClockCmd(rcc, state);
 #else
 	#error "RCC of GPIO is unknown"
 #endif
