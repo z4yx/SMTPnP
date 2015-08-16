@@ -29,10 +29,10 @@
 
 #define X_Axis_Start_Pin GPIO_Pin_2
 #define X_Axis_Start_Port GPIOC
-#define X_Axis_Step_Pin GPIO_Pin_15
-#define X_Axis_Step_Port GPIOC
-#define X_Axis_Dir_Pin GPIO_Pin_2
-#define X_Axis_Dir_Port GPIOD
+#define X_Axis_Step_Pin GPIO_Pin_2
+#define X_Axis_Step_Port GPIOD
+#define X_Axis_Dir_Pin GPIO_Pin_3
+#define X_Axis_Dir_Port GPIOC
 
 #define Y_Axis_Start_Pin GPIO_Pin_11
 #define Y_Axis_Start_Port GPIOC
