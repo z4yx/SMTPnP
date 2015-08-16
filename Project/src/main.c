@@ -55,18 +55,18 @@ static void coreInit()
 static void ChangeClockConfig(void)
 {
 	RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);
-	SystemCoreClock = HSI_VALUE;
+    while (RCC_GetSYSCLKSource() != 0x00);
 
 	RCC_HSEConfig(RCC_HSE_ON);
 	while(RCC_WaitForHSEStartUp() != SUCCESS);
 
 	RCC_PLLCmd(DISABLE);
-	RCC_PLLConfig(RCC_PLLSource_HSI, HSI_VALUE/1000000, 336, 4, 7);
+	RCC_PLLConfig(RCC_PLLSource_HSE, HSE_VALUE/1000000, 336, 4, 7);
 	RCC_PLLCmd(ENABLE);
 	while((RCC->CR & RCC_CR_PLLRDY) == 0);
 
 	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-	SystemCoreClock = 1000000u*336/4;
+    while (RCC_GetSYSCLKSource() != 0x08);
 }
 
 int main(void)
@@ -83,6 +83,7 @@ int main(void)
 	Delay_ms(1000);
 
 	DBG_MSG("\r\n\r\n", 0);
+	DBG_MSG("SystemCoreClock: %u", SystemCoreClock);
 	DBG_MSG("PLL Config: 0x%x", RCC->PLLCFGR);
 	DBG_MSG("Clock Source: %d", RCC_GetSYSCLKSource());
 	DBG_MSG("SYSCLK: %d, H: %d, P1: %d, P2: %d",

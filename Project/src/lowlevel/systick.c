@@ -23,8 +23,10 @@ static volatile SysTick_t systemTickCounter = 0;
 
 void SysTick_Init(void)
 {
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq(&RCC_Clocks);
 	//产生1ms间隔的中断
-	if (SysTick_Config(SystemCoreClock / 1000))
+	if (SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000))
 	{
 		/* Capture error */
 		while (1);

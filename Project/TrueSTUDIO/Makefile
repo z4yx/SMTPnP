@@ -178,7 +178,7 @@ AT91LIBNOWARN = no
 CSTANDARD = -std=gnu99
 
 # Place -D or -U options for C here
-CDEFS =  -D$(RUN_MODE) -Dgcc
+CDEFS =  -D$(RUN_MODE) -Dgcc -DHSE_VALUE=8000000
 
 # Place -I options here
 CINCS =
