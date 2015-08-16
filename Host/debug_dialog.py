@@ -45,8 +45,8 @@ class DebugDialog(wx.Dialog):
             xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -2000),
             xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 2000),
             xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -2000),
-            xrc.XRCID("ZPlus"): (self.onRMoveClick, "Z", 100),
-            xrc.XRCID("ZMinus"): (self.onRMoveClick, "Z", -100),
+            xrc.XRCID("ZPlus"): (self.onZAbsMoveClick, "Z", 100),
+            xrc.XRCID("ZMinus"): (self.onZAbsMoveClick, "Z", -100),
             xrc.XRCID("Rotate"): (self.onRotateClick, "A"),
             xrc.XRCID("SetCur"): (self.onCoordSetClick, "cur"),
             xrc.XRCID("SetZero"): (self.onCoordSetClick, "zero"),
@@ -119,6 +119,17 @@ class DebugDialog(wx.Dialog):
         _id = event.GetId()
         _param = self.Btns[_id]
         comm.SendDebugCommand(_param[1], _param[2])
+
+    def onZAbsMoveClick(self, event):
+        _id = event.GetId()
+        _param = self.Btns[_id]
+        match = re.search('Z=([-\d]+)', self.text_z.GetValue())
+        curZ = 0
+        if match:
+            c = match.groups()
+            if len(c):
+                curZ = int(c[0])
+        comm.SendDebugCommand(_param[1], _param[2]+curZ)
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()
