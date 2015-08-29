@@ -60,7 +60,16 @@ void Command_Task(void)
 			if(Move_XY_Ready()){
 				DBG_MSG("Operation \"Homing\" Done!", 0);
 				currentState = MACH_STATE_NORMAL;
-				Motor_PowerOff();
+				HostCtrl_ReportOpDone("move");
+				HostCtrl_ReportCoordinate();
+			}
+			break;
+		case MACH_STATE_Z_RESET:
+			if(Toolhead_isReady()){
+				DBG_MSG("Operation Z Reset Done!", 0);
+				currentState = MACH_STATE_NORMAL;
+				HostCtrl_ReportOpDone("toolhead");
+				HostCtrl_ReportCoordinate();
 			}
 			break;
 		case MACH_STATE_MANUAL:
@@ -98,6 +107,16 @@ bool Command_StartHomingXY()
 	Move_Home(X_Axis);
 	Move_Home(Y_Axis);
 	currentState = MACH_STATE_HOMING;
+	return true;
+}
+
+bool Command_StartHomingZ()
+{
+	if(currentState != MACH_STATE_NORMAL)
+		return false;
+	Motor_PowerOn();
+	Toolhead_Z_Reset();
+	currentState = MACH_STATE_Z_RESET;
 	return true;
 }
 

@@ -103,9 +103,12 @@ void LimitSwitch_Task()
 			}
 		}else{
 			//超过阈值,按下有效
-			if(cur_state && !bEventSent[i] && now - lastInterrupt[i] >= LIMIT_SWITCH_VALID_TIME) {
+			if(!bEventSent[i] && now - lastInterrupt[i] >= LIMIT_SWITCH_VALID_TIME) {
 				bEventSent[i] = true;
-				Move_LimitReached(i);
+				if(cur_state && (i == LimitSwitch_XMin || i==LimitSwitch_YMin))
+					Move_LimitReached(i);
+				else if(i == LimitSwitch_ZMin)
+					Toolhead_Z_limit_trigger();
 			}
 		}
 	}

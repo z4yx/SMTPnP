@@ -8,8 +8,9 @@ bool Toolhead_Z_Relative(int steps);
 bool Toolhead_Z_Absolute(int steps);
 bool Toolhead_Z_SetCurrentPos(int pos);
 void Toolhead_GetZPos(int *z);
+bool Toolhead_Z_Reset(void);
 
 void Toolhead_Axis_Eneded(uint8_t axis);
-
+void Toolhead_Z_limit_trigger(void);
 
 #endif
