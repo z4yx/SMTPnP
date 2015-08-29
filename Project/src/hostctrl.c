@@ -162,6 +162,11 @@ static void processRequest(char* cmd, char* param)
 				break;
 			case 'f':
 				Vacuum_Pick(*(param+1) == '1');
+				result = true;
+				break;
+			case 'v':
+				Vacuum_Pump_On(*(param+1) == '1');
+				result = true;
 				break;
 		}
 		REPORT(INFO_REPLY, "%d", result);

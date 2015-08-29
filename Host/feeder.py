@@ -30,7 +30,7 @@ class Component:
         base = self.param["base"]
         pos = (base[0] - self.param["tap"]["hole_to_chip"][0] -
                self.current * self.param["tap"]["chip_pitch"], 
-               base[1] + self.param["tap"]["hole_to_chip"][1])
+               base[1] - self.param["tap"]["hole_to_chip"][1])
 
         self.available -= 1
         self.current += 1

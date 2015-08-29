@@ -2,9 +2,9 @@ import re
 
 
 def split_line(line):
-    l = re.split('(?<="),(?=")', line)
-    for i in xrange(0, len(l)):
-        l[i] = l[i][1:-1]
+    l = re.split(',', line)
+    # for i in xrange(0, len(l)):
+    #     l[i] = l[i][1:-1]
     return l
 
 
@@ -63,7 +63,8 @@ def MakeMaterialList(field_info, data):
 
     t = []
     for i in data:
-        t.append(MaterialItem(i[col_x], i[col_y], i[col_r], i[col_mark], i[col_d]))
+        if i[col_x] and i[col_y] and i[col_r]:
+            t.append(MaterialItem(i[col_x], i[col_y], i[col_r], i[col_mark], i[col_d]))
 
     return t
 

@@ -41,16 +41,17 @@ class DebugDialog(wx.Dialog):
 
     def createBtns(self):
         self.Btns = {
-            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 2000),
-            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -2000),
-            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 2000),
-            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -2000),
+            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 500),
+            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -500),
+            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 500),
+            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -500),
             xrc.XRCID("ZPlus"): (self.onZAbsMoveClick, "Z", 100),
             xrc.XRCID("ZMinus"): (self.onZAbsMoveClick, "Z", -100),
             xrc.XRCID("Rotate"): (self.onRotateClick, "A"),
             xrc.XRCID("SetCur"): (self.onCoordSetClick, "cur"),
             xrc.XRCID("SetZero"): (self.onCoordSetClick, "zero"),
             xrc.XRCID("HomeXY"): (self.onHomeXYClick, ),
+            xrc.XRCID("HomeZ"): (self.onHomeZClick, ),
         }
         for (btn_id, param) in self.Btns.items():
             self.Bind(wx.EVT_BUTTON, param[0], id=btn_id)
@@ -96,6 +97,9 @@ class DebugDialog(wx.Dialog):
 
     def onHomeXYClick(self, evt):
         comm.SendHomeXY()
+
+    def onHomeZClick(self, evt):
+        comm.SendHomeZ()
 
     def onCoordSetClick(self, event):
         _id = event.GetId()

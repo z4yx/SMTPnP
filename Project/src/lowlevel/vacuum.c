@@ -44,7 +44,7 @@ void Vacuum_Config()
 
     GPIO_Init(Pump_Port, &GPIO_InitStructure);
 
-    Vacuum_Pump_On(true);
+    Vacuum_Pump_On(false);
 	Vacuum_Pick(false);
 }
 
