@@ -94,7 +94,9 @@ def Write(data):
     last_sent = time.clock()
 
 def SendCommand(name, param):
-    Write("!{}#{}\r\n".format(name, param))
+    cmd="!{}#{}\r\n".format(name, param)
+    print "Cmd: ",cmd.strip()
+    Write(cmd)
 
 
 def SendDebugCommand(target, param):
@@ -119,8 +121,21 @@ def SendAbsoluteZMove(z_steps):
 def SendHomeXY():
     SendCommand("HOMEXY", '')
 
+def SendHomeZ():
+    SendCommand("HOMEZ", '')
+
 def SendToolheadRotate(degree):
     SendCommand("ROTATE", '{}'.format(degree))
+
+def VacuumPrepare():
+    SendCommand("DBG", "v1")
+
+def VacuumOn():
+    SendCommand("DBG", "f1")
+
+def VacuumOff():
+    SendCommand("DBG", "f0")
+    SendCommand("DBG", "v0")
 
 # def SendRelativeMove(axis, distance):
 #     SendCommand(axis, distance)
