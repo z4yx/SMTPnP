@@ -20,13 +20,15 @@
 #include "systick.h"
 
 static volatile SysTick_t systemTickCounter = 0;
+static uint32_t HCLK_Frequency;
 
 void SysTick_Init(void)
 {
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
+	HCLK_Frequency = RCC_Clocks.HCLK_Frequency;
 	//产生1ms间隔的中断
-	if (SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000))
+	if (SysTick_Config(HCLK_Frequency / 1000))
 	{
 		/* Capture error */
 		while (1);
@@ -76,7 +78,7 @@ void Delay_ms(unsigned int ms)
 void Delay_us(unsigned int us)
 {
 	uint32_t val, last;
-	int32_t tmp = us*(SystemCoreClock/1000000);
+	int32_t tmp = us*(HCLK_Frequency/1000000);
 
 	last = SysTick->VAL;
 	while(tmp > 0) {

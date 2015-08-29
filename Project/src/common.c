@@ -210,7 +210,9 @@ void RCC_TIMClockCmd(TIM_TypeDef* TIMx, FunctionalState NewState)
 //根据频率(Hz)计算TIM的参数
 void Timer_16bit_Calc(int freq, uint16_t *period, uint16_t *prescaler)
 {
-	uint32_t tmp = SystemCoreClock / freq;
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq(&RCC_Clocks);
+	uint32_t tmp = RCC_Clocks.PCLK2_Frequency / freq;
 	*prescaler = 1;
 	while(tmp > 0xffff){
 		*prescaler <<= 1;
