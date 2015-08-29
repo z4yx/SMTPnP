@@ -195,6 +195,8 @@ static void processRequest(char* cmd, char* param)
 		HostCtrl_ReportCoordinate();
 	}else if(strcmp(cmd, "HOMEXY") == 0){
 		Command_StartHomingXY();
+	}else if(strcmp(cmd, "HOMEZ") == 0){
+		Command_StartHomingZ();
 	}
 }
 
