@@ -67,12 +67,21 @@ void NMI_Handler(void)
   * @param  None
   * @retval None
   */
-void HardFault_Handler(void)
+__attribute__((naked)) void HardFault_Handler(void)
 {
-  /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
-  }
+  __asm volatile (
+    " movs r0,#4       \n"
+    " movs r1, lr      \n"
+    " tst r0, r1       \n"
+    " beq _MSP         \n"
+    " mrs r0, psp      \n"
+    " b _HALT          \n"
+  "_MSP:               \n"
+    " mrs r0, msp      \n"
+  "_HALT:              \n"
+    " ldr r1,[r0,#20]  \n"
+    " bkpt #0          \n"
+  );
 }
 
 /**
