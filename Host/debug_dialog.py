@@ -38,6 +38,7 @@ class DebugDialog(wx.Dialog):
         self.text_xy = xrc.XRCCTRL(self.panel, "TextXY")
         self.text_z = xrc.XRCCTRL(self.panel, "TextZ")
         self.text_rot = xrc.XRCCTRL(self.panel, "TextR")
+        self.Bind(wx.EVT_TEXT_ENTER,self.onCoordTextEnter, self.text_xy)
 
     def createBtns(self):
         self.Btns = {
@@ -74,6 +75,14 @@ class DebugDialog(wx.Dialog):
             coord = evt.content.split()
             self.text_xy.SetValue("({},{})".format(coord[0], coord[1]))
             self.text_z.SetValue("({})".format(coord[2]))
+
+    def onCoordTextEnter(self, evt):
+        c = self.getCurCoord()
+        if not c:
+            return
+        x,y = c
+        print "onSliderChange {} {}".format(x, y)
+        comm.SendAbsoluteXYMove(int(x), int(y))
 
     def onSliderChangeX(self, evt):
         c = self.getCurCoord()
