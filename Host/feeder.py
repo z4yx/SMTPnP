@@ -20,8 +20,9 @@ class Component:
         self.available = self.__calc_available()
         self.current = 0
         to = self.param["base"]
-        frm = (to[0] - (self.num_holes - 1) *
+        frm = (to[0] - (self.num_holes) *
                self.param["tap"]["hole_pitch"], to[1])
+        to = (to[0]+1500, to[1])
         return (frm, to, conf.FEEDER_DRAG_Z)
 
     def GetComponentPos(self):
