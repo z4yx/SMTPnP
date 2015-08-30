@@ -220,10 +220,13 @@ static void fetchHostCmd(void)
 		led_state = (led_state == LED_ON ? LED_OFF : LED_ON);
 	}
 
+    __disable_irq();
+
 	if(HostCtrl_GetCmd(&p_cmd, &p_param)){
 		processRequest(p_cmd, p_param);
 		HostCtrl_CmdProcessed();
 	}
+    __enable_irq();
 }
 
 void HostCtrl_Task(void)
