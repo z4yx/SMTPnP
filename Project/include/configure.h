@@ -17,8 +17,8 @@
  */
 
 //三轴最大行程(um)
-#define X_MAX_LIMIT 160000
-#define Y_MAX_LIMIT 180000
+#define X_MAX_LIMIT 250000
+#define Y_MAX_LIMIT 120000
 #define Z_MAX_LIMIT 100000
 
 //X轴步进电机旋转一周对应的直线位移(um)
