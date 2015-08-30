@@ -94,7 +94,6 @@ def SendCommand(name, param):
 def SendDebugCommand(target, param):
     SendCommand("DBG", '{}{}'.format(target, param))
 
-
 def SendSetCoordinateCommand(x, y):
     SendCommand("SETC", '{},{}'.format(x, y))
 
@@ -119,15 +118,6 @@ def SendHomeZ():
 def SendToolheadRotate(degree):
     SendCommand("ROTATE", '{}'.format(degree))
 
-def VacuumPrepare():
-    SendCommand("DBG", "v1")
-
-def VacuumOn():
-    SendCommand("DBG", "f1")
-
-def VacuumOff():
-    SendCommand("DBG", "f0")
-    SendCommand("DBG", "v0")
 
 # def SendRelativeMove(axis, distance):
 #     SendCommand(axis, distance)
@@ -135,8 +125,6 @@ def VacuumOff():
 # def SetCallbackWindow(win):
 #     global _callback_win
 #     _callback_win = win
-
-
 def Close():
     global _com
     _com.close()

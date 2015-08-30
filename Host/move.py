@@ -10,15 +10,31 @@ def Init():
     comm.Init(queue=reply_queue)
 
 
-def WaitMoveDone(type):
+def WaitForReply(token, type):
     flag = True
     while flag:
-        print "Waiting for "+type
         item = reply_queue.get()
-        print "Done {}".format(item)
-        if item[0] == 'DONE' and item[1] == type:
+        print "WaitForReply {}".format(item)
+        if item[0] == token and (type == None or item[1] == type):
             flag = False
         reply_queue.task_done()
+
+def VacuumPrepare():
+    comm.SendCommand("DBG", "v1")
+    WaitForReply("RE", None)
+
+def VacuumOn():
+    comm.SendCommand("DBG", "f1")
+    WaitForReply("RE", None)
+
+def VacuumOff():
+    comm.SendCommand("DBG", "f0")
+    WaitForReply("RE", None)
+    comm.SendCommand("DBG", "v0")
+    WaitForReply("RE", None)
+
+def WaitMoveDone(type):
+    WaitForReply("DONE", type)
 
 def HomeAndWait():
     comm.SendHomeZ()
@@ -44,10 +60,10 @@ def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation):
     print "DoPlace... {} {} {} {}".format(CompPos, CompZ, BoardPos, BoardZ)
     comm.SendAbsoluteXYMove(CompPos[0], CompPos[1])
     WaitMoveDone("move")
-    comm.VacuumPrepare()
+    VacuumPrepare()
     comm.SendAbsoluteZMove(CompZ)
     WaitMoveDone("toolhead")
-    comm.VacuumOn()
+    VacuumOn()
 
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
@@ -58,7 +74,7 @@ def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation):
     WaitMoveDone("move")
     comm.SendAbsoluteZMove(BoardZ)
     WaitMoveDone("toolhead")
-    comm.VacuumOff()
+    VacuumOff()
 
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
