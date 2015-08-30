@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# encoding: utf-8
 import Queue
 import comm
 import time
@@ -54,9 +56,10 @@ def DoTapeMove(start, end, z):
     WaitMoveDone("toolhead")
 
 
-def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation):
-    CompPos = (CompPos[0]+conf.TIP_TO_DRAG[0], CompPos[1]-conf.TIP_TO_DRAG[1])
-    BoardPos = (BoardPos[0]+conf.TIP_TO_DRAG[0], BoardPos[1]-conf.TIP_TO_DRAG[1])
+def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation, debug=False):
+    print "CompPos:", CompPos
+    CompPos = (CompPos[0]-conf.TIP_TO_DRAG[0], CompPos[1]-conf.TIP_TO_DRAG[1])
+    BoardPos = (BoardPos[0]-conf.TIP_TO_DRAG[0], BoardPos[1]-conf.TIP_TO_DRAG[1])
     print "DoPlace... {} {} {} {}".format(CompPos, CompZ, BoardPos, BoardZ)
     comm.SendAbsoluteXYMove(CompPos[0], CompPos[1])
     WaitMoveDone("move")
@@ -67,6 +70,8 @@ def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation):
 
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
+    if debug:
+        return
     comm.SendToolheadRotate(Rotation)
     WaitMoveDone("toolhead")
 
@@ -78,14 +83,17 @@ def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation):
 
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
+    if Rotation != 0:
+        comm.SendToolheadRotate(360-Rotation)
+        WaitMoveDone("toolhead")
 
 if __name__ == '__main__':
     import feeder
     Init()
-    c = feeder.FindComponentByName("Cap Semi")
-    for x in xrange(3):
-        # s, e, z = c.TapeMoving()
-        # DoTapeMove(s, e, z)
+    c = feeder.FindComponentByName("LED")
+    for x in xrange(5):
+        s, e, z = c.TapeMoving()
+        DoTapeMove(s, e, z)
         pos, z = c.GetComponentPos()
-        DoPlace(pos, z, (230000,76000), conf.BOARD_Z, 45)
+        DoPlace(pos, z, (23000,76000), conf.BOARD_Z, 45, True)
         time.sleep(1)
