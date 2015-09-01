@@ -5,26 +5,26 @@ SERIAL_BAUD = 115200
 MACH_MAX_X = 250000
 MACH_MAX_Y = 120000
 
-FEEDER_SIZE = 16 * 1000  # (um)
-FEEDER_DRAG_Z = 320
+FEEDER_SIZE = 12 * 1000  # (um)
+FEEDER_DRAG_Z = 330
 
-BOARD_Z = 80
-BOARD_ORIGIN = (106000-5092, 94750+63024)
+BOARD_Z = 120
+BOARD_ORIGIN = (102800-5092, 97520+63024)
 
-TIP_TO_DRAG = (5000, 34500)
+TIP_TO_DRAG = (26550-21000, 84700-48960)
 
 COMPONENTS_PARAM = [
     {
         "name": "LED",
         "number": 100,
-        "z_pos": 180,
+        "z_pos": 200,
         "tap": {
             "hole_pitch": 4000,  # (um)
             "chip_pitch": 4000,
             "hole_to_chip": (2000, 3500),
             "chips_per_hole": 1
         },
-        "base": (26550, 84200)
+        "base": (26550, 84700)
     },{
         "name": "LED1 test",
         "number": 100,
