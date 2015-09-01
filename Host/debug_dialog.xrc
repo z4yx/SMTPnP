@@ -27,19 +27,19 @@
                   <label>X+</label>
                 </object>
                 <flag>wxALIGN_CENTRE</flag>
-                <cellpos>1,0</cellpos>
+                <cellpos>1,2</cellpos>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="XMinus">
                   <label>X-</label>
                 </object>
                 <flag>wxALIGN_CENTRE</flag>
-                <cellpos>1,2</cellpos>
+                <cellpos>1,0</cellpos>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="TextXY">
                   <size>158,-1</size>
-                  <style>wxTE_READONLY|wxTE_CENTRE</style>
+                  <style>wxTE_CENTRE|wxTE_PROCESS_ENTER</style>
                 </object>
                 <option>-1</option>
                 <flag>wxALIGN_CENTRE</flag>
@@ -121,7 +121,7 @@
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxGridSizer">
-              <cols>2</cols>
+              <cols>4</cols>
               <rows>1</rows>
               <vgap>5</vgap>
               <hgap>3</hgap>
@@ -133,6 +133,16 @@
               <object class="sizeritem">
                 <object class="wxButton" name="SetZero">
                   <label>Set To Zero</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="HomeXY">
+                  <label>Home XY</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="HomeZ">
+                  <label>Home Z</label>
                 </object>
               </object>
             </object>

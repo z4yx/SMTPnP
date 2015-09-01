@@ -36,9 +36,6 @@ static uint8_t parse_stage;
 static bool cmd_received;
 static char cmd_buf[CMD_BUF_LEN], param_buf[PARAM_BUF_LEN];
 
-// 运动结束后报告
-static bool move_pending_report, toolhead_pending_report;
-
 #define REPORT(info_type, format, ...) USB_CDC_printf("!I#%s#" format "\r\n", info_type, __VA_ARGS__)
 
 void HostCtrl_Init()
@@ -100,7 +97,7 @@ static void parse_host_cmd(uint8_t byte)
 	}
 }
 
-static void reportCoordinate()
+void HostCtrl_ReportCoordinate()
 {
 	int x,y,z;
 	Move_GetPos(&x, &y);
@@ -108,21 +105,9 @@ static void reportCoordinate()
 	REPORT(INFO_COORD, "X=%d Y=%d Z=%d", x, y, z);
 }
 
-static void reportMoveEnded()
+void HostCtrl_ReportOpDone(const char *name)
 {
-	bool flag = false;
-	if(move_pending_report && Move_XY_Ready()){
-		move_pending_report = false;
-		flag = true;
-		REPORT(INFO_DONE, "%s", "move");
-	}
-	if(toolhead_pending_report && Toolhead_isReady()){
-		toolhead_pending_report = false;
-		flag = true;
-		REPORT(INFO_DONE, "%s", "toolhead");
-	}
-	if(flag)
-		reportCoordinate();
+	REPORT(INFO_DONE, "%s", name);
 }
 
 static void reportState()
@@ -167,22 +152,21 @@ static void processRequest(char* cmd, char* param)
 			case 'Y':
 				tmp = *param-'X';
 				val[tmp] = atoi(param+1);
-				Motor_PowerOn();
-				result = Move_RelativeMove(val, DEFAULT_FEEDRATE);
-				move_pending_report = true;
+				result = Command_RelativeMove(val, DEFAULT_FEEDRATE);
 				break;
 			case 'Z':
-				Motor_PowerOn();
-				result = Toolhead_Z_Relative(atoi(param+1));
-				toolhead_pending_report = true;
+				result = Command_Toolhead_Z_Absolute(atoi(param+1));
 				break;
 			case 'A':
-				Motor_PowerOn();
-				result = Toolhead_Rotate(atoi(param+1));
-				toolhead_pending_report = true;
+				result = Command_Toolhead_Rotate(atoi(param+1));
 				break;
 			case 'f':
 				Vacuum_Pick(*(param+1) == '1');
+				result = true;
+				break;
+			case 'v':
+				Vacuum_Pump_On(*(param+1) == '1');
+				result = true;
 				break;
 		}
 		REPORT(INFO_REPLY, "%d", result);
@@ -193,22 +177,16 @@ static void processRequest(char* cmd, char* param)
 			xy[0] = atoi(param);
 			xy[1] = atoi(sep+1);
 			DBG_MSG("Absolute Move %d,%d", xy[0], xy[1]);
-			move_pending_report = true;
-			Motor_PowerOn();
-			Move_AbsoluteMove(xy, DEFAULT_FEEDRATE);
+			Command_AbsoluteMove(xy, DEFAULT_FEEDRATE);
 		}
 	}else if(strcmp(cmd, "ABSZ") == 0){
 		int z = atoi(param);
 		DBG_MSG("Absolute Z Move steps:%d", z);
-		toolhead_pending_report = true;
-		Motor_PowerOn();
-		Toolhead_Z_Absolute(z);
+		Command_Toolhead_Z_Absolute(z);
 	}else if(strcmp(cmd, "ROTATE") == 0){
 		int z = atoi(param);
 		DBG_MSG("Rotate degree:%d", z);
-		toolhead_pending_report = true;
-		Motor_PowerOn();
-		Toolhead_Rotate(z);
+		Command_Toolhead_Rotate(z);
 	}else if(strcmp(cmd, "SETC") == 0){
 		char *sep = strchr(param, ',');
 		if(sep){
@@ -219,7 +197,11 @@ static void processRequest(char* cmd, char* param)
 			Move_SetCurrentPos(xy);
 		}
 	}else if(strcmp(cmd, "GETC") == 0){
-		reportCoordinate();
+		HostCtrl_ReportCoordinate();
+	}else if(strcmp(cmd, "HOMEXY") == 0){
+		Command_StartHomingXY();
+	}else if(strcmp(cmd, "HOMEZ") == 0){
+		Command_StartHomingZ();
 	}
 }
 
@@ -238,16 +220,18 @@ static void fetchHostCmd(void)
 		led_state = (led_state == LED_ON ? LED_OFF : LED_ON);
 	}
 
+    __disable_irq();
+
 	if(HostCtrl_GetCmd(&p_cmd, &p_param)){
 		processRequest(p_cmd, p_param);
 		HostCtrl_CmdProcessed();
 	}
+    __enable_irq();
 }
 
 void HostCtrl_Task(void)
 {
 	fetchHostCmd();
-	reportMoveEnded();
 }
 
 void HostCtrl_Recv_Interrupt(uint8_t byte)

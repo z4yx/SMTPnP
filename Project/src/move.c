@@ -201,12 +201,9 @@ bool Move_AbsoluteMove(int xyza[2], int feedrate)
 
 	float distance = Distance2D(delta[X_Axis], delta[Y_Axis]);
 	if(distance < 1) {
-		distance = abs(delta[A_Axis]);
-		if(distance < 1) {
 			ERR_MSG("Move distance < 1", 0);
 			return false;
 		}
-	}
 	float duration = distance / feedrate * MIN2SEC;
 
 	DBG_MSG("duration: %dms", (int)(duration*1000));

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# encoding: utf-8
 import csv_reader
 import comm
 import feeder
@@ -7,15 +9,10 @@ import time
 
 move.Init()
 
-print "Set to zero..."
-comm.SendSetCoordinateCommand(0,0)
-time.sleep(0.2)
-
-board_origin = (344392, -3224)
-
+move.HomeAndWait()
 
 def Material2BoardPos(m_x, m_y):
-    return (board_origin[0] - m_x, m_y + board_origin[1])
+    return (conf.BOARD_ORIGIN[0] + m_x, conf.BOARD_ORIGIN[1] - m_y)
 
 field_info, data = csv_reader.ParseCSV("LED.csv")
 material_list = csv_reader.MakeMaterialList(field_info, data)

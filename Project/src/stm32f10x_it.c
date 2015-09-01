@@ -16,6 +16,8 @@
  * =====================================================================================
  */
 
+#if defined (STM32F10X_LD) || defined (STM32F10X_LD_VL) || defined (STM32F10X_MD) || defined (STM32F10X_MD_VL) || defined (STM32F10X_HD) || defined (STM32F10X_HD_VL) || defined (STM32F10X_XL) || defined (STM32F10X_CL) 
+
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "usb_istr.h"
@@ -202,7 +204,7 @@ void TIM7_IRQHandler(void)
 
 void USART1_IRQHandler(void)
 {
-  // if(USART_GetITStatus(USART1, USART_FLAG_RXNE) == SET){
+  // if(USART_GetITStatus(USART1, USART_IT_RXNE) == SET){
   //   HostCtrl_Interrupt();
   // }
 }
@@ -243,4 +245,7 @@ void SDIO_IRQHandler(void)
   /* Process All SDIO Interrupt Sources */
   // SD_ProcessIRQSrc();
 }
+
+#endif
+
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# encoding: utf-8
 import Queue
 import comm
 import time
@@ -10,22 +12,43 @@ def Init():
     comm.Init(queue=reply_queue)
 
 
-def WaitMoveDone(type):
+def WaitForReply(token, type):
     flag = True
     while flag:
-        print "Waiting for move"
         item = reply_queue.get()
-        print "Done {}".format(item)
-        if item[0] == 'DONE' and item[1] == type:
+        print "WaitForReply {}".format(item)
+        if item[0] == token and (type == None or item[1] == type):
             flag = False
         reply_queue.task_done()
 
+def VacuumPrepare():
+    comm.SendCommand("DBG", "v1")
+    WaitForReply("RE", None)
+
+def VacuumOn():
+    comm.SendCommand("DBG", "f1")
+    WaitForReply("RE", None)
+
+def VacuumOff():
+    comm.SendCommand("DBG", "f0")
+    WaitForReply("RE", None)
+    comm.SendCommand("DBG", "v0")
+    WaitForReply("RE", None)
+
+def WaitMoveDone(type):
+    WaitForReply("DONE", type)
+
+def HomeAndWait():
+    comm.SendHomeZ()
+    WaitMoveDone("toolhead")
+    comm.SendHomeXY()
+    WaitMoveDone("move")
 
 def DoTapeMove(start, end, z):
     print "DoTapeMove... {} {} {}".format(start, end, z)
     comm.SendAbsoluteXYMove(start[0], start[1])
     WaitMoveDone("move")
-    comm.SendAbsoluteZMove(z)
+    comm.SendAbsoluteZMove(-z)
     WaitMoveDone("toolhead")
     comm.SendAbsoluteXYMove(end[0], end[1])
     WaitMoveDone("move")
@@ -33,32 +56,44 @@ def DoTapeMove(start, end, z):
     WaitMoveDone("toolhead")
 
 
-def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation):
+def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation, debug=False):
+    print "CompPos:", CompPos
+    CompPos = (CompPos[0]-conf.TIP_TO_DRAG[0], CompPos[1]-conf.TIP_TO_DRAG[1])
+    BoardPos = (BoardPos[0]-conf.TIP_TO_DRAG[0], BoardPos[1]-conf.TIP_TO_DRAG[1])
     print "DoPlace... {} {} {} {}".format(CompPos, CompZ, BoardPos, BoardZ)
     comm.SendAbsoluteXYMove(CompPos[0], CompPos[1])
     WaitMoveDone("move")
+    VacuumPrepare()
     comm.SendAbsoluteZMove(CompZ)
     WaitMoveDone("toolhead")
-    # vacuum on
+    VacuumOn()
+
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
+    if debug:
+        return
     comm.SendToolheadRotate(Rotation)
-    #
+    WaitMoveDone("toolhead")
+
     comm.SendAbsoluteXYMove(BoardPos[0], BoardPos[1])
     WaitMoveDone("move")
     comm.SendAbsoluteZMove(BoardZ)
     WaitMoveDone("toolhead")
-    # vacuum off
+    VacuumOff()
+
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
+    if Rotation != 0:
+        comm.SendToolheadRotate(360-Rotation)
+        WaitMoveDone("toolhead")
 
 if __name__ == '__main__':
     import feeder
     Init()
-    c = feeder.FindComponentByName("Cap Semi")
-    for x in xrange(3):
-        # s, e, z = c.TapeMoving()
-        # DoTapeMove(s, e, z)
+    c = feeder.FindComponentByName("LED")
+    for x in xrange(5):
+        s, e, z = c.TapeMoving()
+        DoTapeMove(s, e, z)
         pos, z = c.GetComponentPos()
-        DoPlace(pos, z, (230000,76000), conf.BOARD_Z, 45)
+        DoPlace(pos, z, (23000,76000), conf.BOARD_Z, 45, True)
         time.sleep(1)

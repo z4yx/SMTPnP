@@ -18,26 +18,27 @@
 #ifndef __COMMON__H__
 #define __COMMON__H__
 
+#if defined (STM32F10X_LD) || defined (STM32F10X_LD_VL) || defined (STM32F10X_MD) || defined (STM32F10X_MD_VL) || defined (STM32F10X_HD) || defined (STM32F10X_HD_VL) || defined (STM32F10X_XL) || defined (STM32F10X_CL) 
 #include "stm32f10x.h"
+
+#include "usb_type.h" //for definition of bool
+
+#elif defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F411xE) || defined(STM32F446xx)
+#include "stm32f4xx.h"
+
+typedef enum{FALSE, TRUE} bool;
+
+#endif
 #include "hardwareDef.h"
 #include "configure.h"
 #include <stdint.h>
+#include <stdio.h>
 
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-#ifndef bool
-#define bool uint8_t
-#define true 1
-#define TRUE true
-#define false 0
-#define FALSE false
-#endif
+#define true TRUE
+#define false FALSE
 
-extern void USART_printf(USART_TypeDef* USARTx, char *Data, ...);
-
-#define DBG_MSG(format, ...) USART_printf(Debug_USART, "[Debug]%s: " format "\r\n", __func__, __VA_ARGS__)
-#define ERR_MSG(format, ...) USART_printf(Debug_USART, "[Error]%s: " format "\r\n", __func__, __VA_ARGS__)
+#define DBG_MSG(format, ...) printf("[Debug]%s: " format "\r\n", __func__, ##__VA_ARGS__)
+#define ERR_MSG(format, ...) printf("[Error]%s: " format "\r\n", __func__, ##__VA_ARGS__)
  
 void RCC_GPIOClockCmd(GPIO_TypeDef* GPIOx, FunctionalState state);
 void RCC_USARTClockCmd(USART_TypeDef* USARTx, FunctionalState state);

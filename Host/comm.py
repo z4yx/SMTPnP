@@ -86,12 +86,13 @@ def Write(data):
     last_sent = time.clock()
 
 def SendCommand(name, param):
-    Write("!{}#{}\r\n".format(name, param))
+    cmd="!{}#{}\r\n".format(name, param)
+    print "Cmd: ",cmd.strip()
+    Write(cmd)
 
 
 def SendDebugCommand(target, param):
     SendCommand("DBG", '{}{}'.format(target, param))
-
 
 def SendSetCoordinateCommand(x, y):
     SendCommand("SETC", '{},{}'.format(x, y))
@@ -108,9 +109,15 @@ def SendAbsoluteXYMove(x, y):
 def SendAbsoluteZMove(z_steps):
     SendCommand("ABSZ", '{}'.format(z_steps))
 
+def SendHomeXY():
+    SendCommand("HOMEXY", '')
+
+def SendHomeZ():
+    SendCommand("HOMEZ", '')
 
 def SendToolheadRotate(degree):
     SendCommand("ROTATE", '{}'.format(degree))
+
 
 # def SendRelativeMove(axis, distance):
 #     SendCommand(axis, distance)
@@ -118,8 +125,6 @@ def SendToolheadRotate(degree):
 # def SetCallbackWindow(win):
 #     global _callback_win
 #     _callback_win = win
-
-
 def Close():
     global _com
     _com.close()
