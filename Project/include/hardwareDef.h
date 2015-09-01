@@ -34,8 +34,13 @@
 
 #define RE_Y_TIM     TIM3
 #define RE_Y_TIM_IRQ TIM3_IRQn
+#if defined (STM32F10X_LD) || defined (STM32F10X_LD_VL) || defined (STM32F10X_MD) || defined (STM32F10X_MD_VL) || defined (STM32F10X_HD) || defined (STM32F10X_HD_VL) || defined (STM32F10X_XL) || defined (STM32F10X_CL)
 #define RE_Y_PORT    GPIOA
 #define RE_Y_PINS    (GPIO_Pin_6|GPIO_Pin_7)
+#else
+#define RE_Y_PORT    GPIOB
+#define RE_Y_PINS    (GPIO_Pin_4|GPIO_Pin_5)
+#endif
 
 #define X_Axis_Start_Pin GPIO_Pin_2
 #define X_Axis_Start_Port GPIOC

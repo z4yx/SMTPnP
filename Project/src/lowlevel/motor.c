@@ -32,18 +32,13 @@ static int8_t Motor_Direction[NUM_MOTORS];
 static uint8_t Motor_OutputLevel[NUM_MOTORS];
 
 //用于产生电机脉冲的定时器
-static TIM_TypeDef* (Motor_TIM[NUM_MOTORS]) = {TIM1, TIM2, TIM3, TIM4};
-static uint8_t Motor_TIM_IRQ[NUM_MOTORS] = {
 #if defined (STM32F10X_LD) || defined (STM32F10X_LD_VL) || defined (STM32F10X_MD) || defined (STM32F10X_MD_VL) || defined (STM32F10X_HD) || defined (STM32F10X_HD_VL) || defined (STM32F10X_CL) 
-	TIM1_UP_IRQn,
-#else 
-	TIM1_UP_TIM10_IRQn,
+static TIM_TypeDef* (Motor_TIM[NUM_MOTORS]) = {TIM4, TIM5, TIM6, TIM7};
+static uint8_t Motor_TIM_IRQ[NUM_MOTORS] = {TIM4_IRQn, TIM5_IRQn, TIM6_IRQn, TIM7_IRQn};
+#else
+static TIM_TypeDef* (Motor_TIM[NUM_MOTORS]) = {TIM4, TIM5, TIM9, TIM10};
+static uint8_t Motor_TIM_IRQ[NUM_MOTORS] = {TIM4_IRQn, TIM5_IRQn, TIM1_BRK_TIM9_IRQn, TIM1_UP_TIM10_IRQn};
 #endif
-	TIM2_IRQn, TIM3_IRQn, TIM4_IRQn};
-static uint32_t Motor_TIM_APB1ClockSrc = 
-	RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3 | RCC_APB1Periph_TIM4;
-static uint32_t Motor_TIM_APB2ClockSrc = 
-	RCC_APB2Periph_TIM1;
 
 static const uint16_t Motor_En_Pins[NUM_MOTORS] =
 	{X_Axis_Start_Pin, Y_Axis_Start_Pin, Z_Axis_Start_Pin, A_Axis_Start_Pin};
@@ -213,7 +208,9 @@ bool Motor_isPowerOn()
 
 void Motor_Init()
 {
-	RCC_APB1PeriphClockCmd(Motor_TIM_ClockSrc, ENABLE);
+	for(int i=0; i<NUM_MOTORS; i++) {
+		RCC_TIMClockCmd(Motor_TIM[i], ENABLE);
+	}
 	Motor_Output_Config();
 	Motor_TIM_SetInterrupt();
 }

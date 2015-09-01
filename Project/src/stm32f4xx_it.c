@@ -176,27 +176,40 @@ void SysTick_Handler(void)
 {
 }*/
 
-void TIM1_UP_TIM10_IRQHandler(void)
+void TIM1_BRK_TIM9_IRQHandler(void)
 {
-  if(SET == TIM_GetITStatus(TIM1, TIM_IT_Update)) {
-    Motor_Interrupt(TIM1);
+  if(SET == TIM_GetITStatus(TIM9, TIM_IT_Update)) {
+    Motor_Interrupt(TIM9);
   }
 }
 
-void TIM2_IRQHandler(void)
+void TIM1_UP_TIM10_IRQHandler(void)
 {
-  Motor_Interrupt(TIM2);
-}
-
-void TIM3_IRQHandler(void)
-{
-  Motor_Interrupt(TIM3);
+  if(SET == TIM_GetITStatus(TIM10, TIM_IT_Update)) {
+    Motor_Interrupt(TIM10);
+  }
 }
 
 void TIM4_IRQHandler(void)
 {
   Motor_Interrupt(TIM4);
 }
+
+void TIM5_IRQHandler(void)
+{
+  Motor_Interrupt(TIM5);
+}
+
+void TIM2_IRQHandler(void)
+{
+  Move_RecEncInterrupt(TIM2);
+}
+
+void TIM3_IRQHandler(void)
+{
+  Move_RecEncInterrupt(TIM3);
+}
+
 
 void OTG_FS_WKUP_IRQHandler(void)
 {
