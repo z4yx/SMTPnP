@@ -207,6 +207,137 @@ void RCC_TIMClockCmd(TIM_TypeDef* TIMx, FunctionalState NewState)
 	}
 }
 
+#if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F411xE) || defined(STM32F446xx)
+uint8_t TIMtoGPIOAlternateFunction(TIM_TypeDef* TIMx)
+{
+	uint8_t ret;
+
+	switch((uint32_t)TIMx) {
+#ifdef TIM1
+		case (uint32_t)TIM1:
+			ret = GPIO_AF_TIM1;
+			break;
+#endif
+#ifdef TIM2
+		case (uint32_t)TIM2:
+			ret = GPIO_AF_TIM2;
+			break;
+#endif
+#ifdef TIM3
+		case (uint32_t)TIM3:
+			ret = GPIO_AF_TIM3;
+			break;
+#endif
+#ifdef TIM4
+		case (uint32_t)TIM4:
+			ret = GPIO_AF_TIM4;
+			break;
+#endif
+#ifdef TIM5
+		case (uint32_t)TIM5:
+			ret = GPIO_AF_TIM5;
+			break;
+#endif
+#ifdef TIM12
+		case (uint32_t)TIM12:
+			ret = GPIO_AF_TIM12;
+			break;
+#endif
+#ifdef TIM13
+		case (uint32_t)TIM13:
+			ret = GPIO_AF_TIM13;
+			break;
+#endif
+#ifdef TIM14
+		case (uint32_t)TIM14:
+			ret = GPIO_AF_TIM14;
+			break;
+#endif
+#ifdef TIM8
+		case (uint32_t)TIM8:
+			ret = GPIO_AF_TIM8;
+			break;
+#endif
+#ifdef TIM9
+		case (uint32_t)TIM9:
+			ret = GPIO_AF_TIM9;
+			break;
+#endif
+#ifdef TIM10
+		case (uint32_t)TIM10:
+			ret = GPIO_AF_TIM10;
+			break;
+#endif
+#ifdef TIM11
+		case (uint32_t)TIM11:
+			ret = GPIO_AF_TIM11;
+			break;
+#endif
+		default:
+			ret = 0;
+			/* Invalid argument! */
+			break;
+	}
+	return ret;
+}
+
+uint8_t GPIO_Pin2PinSource(uint16_t GPIO_Pin)
+{
+	uint8_t pinSource = 0;
+	switch(GPIO_Pin){
+		case GPIO_Pin_0:
+			pinSource = GPIO_PinSource0;
+			break;
+		case GPIO_Pin_1:
+			pinSource = GPIO_PinSource1;
+			break;
+		case GPIO_Pin_2:
+			pinSource = GPIO_PinSource2;
+			break;
+		case GPIO_Pin_3:
+			pinSource = GPIO_PinSource3;
+			break;
+		case GPIO_Pin_4:
+			pinSource = GPIO_PinSource4;
+			break;
+		case GPIO_Pin_5:
+			pinSource = GPIO_PinSource5;
+			break;
+		case GPIO_Pin_6:
+			pinSource = GPIO_PinSource6;
+			break;
+		case GPIO_Pin_7:
+			pinSource = GPIO_PinSource7;
+			break;
+		case GPIO_Pin_8:
+			pinSource = GPIO_PinSource8;
+			break;
+		case GPIO_Pin_9:
+			pinSource = GPIO_PinSource9;
+			break;
+		case GPIO_Pin_10:
+			pinSource = GPIO_PinSource10;
+			break;
+		case GPIO_Pin_11:
+			pinSource = GPIO_PinSource11;
+			break;
+		case GPIO_Pin_12:
+			pinSource = GPIO_PinSource12;
+			break;
+		case GPIO_Pin_13:
+			pinSource = GPIO_PinSource13;
+			break;
+		case GPIO_Pin_14:
+			pinSource = GPIO_PinSource14;
+			break;
+		case GPIO_Pin_15:
+			pinSource = GPIO_PinSource15;
+			break;
+	}
+	return pinSource;
+}
+#endif
+
 //根据频率(Hz)计算TIM的参数
 void Timer_16bit_Calc(int freq, uint16_t *period, uint16_t *prescaler)
 {

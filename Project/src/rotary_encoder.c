@@ -1,6 +1,6 @@
+#include "common.h"
 #include "rotary_encoder.h"
 #include "systick.h"
-#include "common.h"
 
 void RotaryEnc_Config(TIM_TypeDef *TIMx, GPIO_TypeDef* Port, uint16_t Pins, uint16_t Number)
 {
@@ -12,10 +12,27 @@ void RotaryEnc_Config(TIM_TypeDef *TIMx, GPIO_TypeDef* Port, uint16_t Pins, uint
     RCC_TIMClockCmd(TIMx, ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = Pins;
+#ifdef IS_GPIO_OTYPE 
+    //New GPIO peripheral
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+#else
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+#endif
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(Port, &GPIO_InitStructure);
 
+#ifdef IS_GPIO_OTYPE //New GPIO peripheral
+    for (uint16_t i = Pins; i;)
+    {
+        uint16_t lowbit = i&-i;
+        GPIO_PinAFConfig(Port, GPIO_Pin2PinSource(lowbit), TIMtoGPIOAlternateFunction(TIMx));
+        i^=lowbit;
+    }
+#endif
+
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
     TIM_TimeBaseStructure.TIM_Prescaler = 0x0;  // No prescaling 
     TIM_TimeBaseStructure.TIM_Period = Number-1;  
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -41,7 +58,7 @@ void RotaryEnc_ClearCounter(TIM_TypeDef *TIMx)
 
 uint16_t RotaryEnc_GetCounter(TIM_TypeDef *TIMx)
 {
-    TIM_GetCounter(TIMx);
+    return TIM_GetCounter(TIMx);
 }
 
 void RotaryEnc_TIM_SetInterrupt(TIM_TypeDef *TIMx, uint8_t Irq)

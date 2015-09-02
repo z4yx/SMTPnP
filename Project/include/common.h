@@ -40,6 +40,9 @@ typedef enum{FALSE, TRUE} bool;
 #define DBG_MSG(format, ...) printf("[Debug]%s: " format "\r\n", __func__, ##__VA_ARGS__)
 #define ERR_MSG(format, ...) printf("[Error]%s: " format "\r\n", __func__, ##__VA_ARGS__)
  
+uint8_t TIMtoGPIOAlternateFunction(TIM_TypeDef* TIMx);
+uint8_t GPIO_Pin2PinSource(uint16_t GPIO_Pin);
+void RCC_TIMClockCmd(TIM_TypeDef* TIMx, FunctionalState NewState);
 void RCC_GPIOClockCmd(GPIO_TypeDef* GPIOx, FunctionalState state);
 void RCC_USARTClockCmd(USART_TypeDef* USARTx, FunctionalState state);
 void Timer_16bit_Calc(int freq, uint16_t *period, uint16_t *prescaler);
