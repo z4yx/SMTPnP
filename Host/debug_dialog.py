@@ -42,12 +42,12 @@ class DebugDialog(wx.Dialog):
 
     def createBtns(self):
         self.Btns = {
-            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 20000),
-            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -20000),
-            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 20000),
-            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -20000),
-            xrc.XRCID("ZPlus"): (self.onZAbsMoveClick, "Z", 100),
-            xrc.XRCID("ZMinus"): (self.onZAbsMoveClick, "Z", -100),
+            xrc.XRCID("YPlus"): (self.onRMoveClick, "Y", 2000),
+            xrc.XRCID("YMinus"): (self.onRMoveClick, "Y", -2000),
+            xrc.XRCID("XPlus"): (self.onRMoveClick, "X", 2000),
+            xrc.XRCID("XMinus"): (self.onRMoveClick, "X", -2000),
+            xrc.XRCID("ZPlus"): (self.onRMoveClick, "Z", 100),
+            xrc.XRCID("ZMinus"): (self.onRMoveClick, "Z", -100),
             xrc.XRCID("Rotate"): (self.onRotateClick, "A"),
             xrc.XRCID("SetCur"): (self.onCoordSetClick, "cur"),
             xrc.XRCID("SetZero"): (self.onCoordSetClick, "zero"),
@@ -112,7 +112,7 @@ class DebugDialog(wx.Dialog):
         if _param[1] == "cur":
             c = self.getCurCoord()
             if c:
-                comm.SendSetCoordinateCommand(c[0], c[1])
+                    comm.SendSetCoordinateCommand(c[0], c[1])
         elif _param[1] == "zero":
             comm.SendSetCoordinateCommand(0, 0)
 
