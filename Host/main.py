@@ -8,7 +8,6 @@ import conf
 import time
 
 move.Init()
-
 move.HomeAndWait()
 
 def Material2BoardPos(m_x, m_y):
