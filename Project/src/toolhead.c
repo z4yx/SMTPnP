@@ -69,7 +69,7 @@ bool Toolhead_Z_Reset()
 
 bool Toolhead_Rotate(int16_t degree)
 {
-	if(RotaterRunning)
+	if(RotaterRunning || degree==0)
 		return false;
 
 	int d = A_PULSES_PER_CYCLE;
