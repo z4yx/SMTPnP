@@ -38,11 +38,13 @@ def VacuumOff():
 def WaitMoveDone(type):
     WaitForReply("DONE", type)
 
-def HomeAndWait():
-    comm.SendHomeZ()
-    WaitMoveDone("toolhead")
+def HomeAndWaitXY():
     comm.SendHomeXY()
     WaitMoveDone("move")
+
+def HomeAndWaitZ():
+    comm.SendHomeZ()
+    WaitMoveDone("toolhead")
 
 def DoTapeMove(start, end, z):
     print "DoTapeMove... {} {} {}".format(start, end, z)
