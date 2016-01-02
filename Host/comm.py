@@ -39,7 +39,7 @@ class RecvThread(threading.Thread):
                 pass
             if not line:
                 break
-            print "recv: %s" % line.strip()
+            print "<--%s" % line.strip()
             info, content = DecodeReport(line)
             if info:
                 self.pass_message(info, content)
@@ -95,7 +95,7 @@ def Write(data):
 
 def SendCommand(name, param):
     cmd="!{}#{}\r\n".format(name, param)
-    print "Cmd: ",cmd.strip()
+    print "-->%s" % cmd.strip()
     Write(cmd)
 
 
