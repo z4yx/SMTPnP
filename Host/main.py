@@ -23,8 +23,11 @@ for i in material_list:
         continue
     print i.Designator
     if c.NeedTapeMoving():
+        move.HomeAndWaitZ()
         s, e, z = c.TapeMoving()
         move.DoTapeMove(s, e, z)
 
     pos, comp_z = c.GetComponentPos()
+    move.HomeAndWaitZ()
     move.DoPlace(pos, comp_z, Material2BoardPos(i.X, i.Y), conf.BOARD_Z, i.Rotation)
+    move.HomeAndWaitZ()
