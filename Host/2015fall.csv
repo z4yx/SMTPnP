@@ -1,0 +1,24 @@
+Designator,Footprint,Mid X,Mid Y,Ref X,Ref Y,Pad X,Pad Y,Layer,Rotation,Comment
+
+Designator29,RESC1608L,16.002mm,0mm,16.002mm,0mm,15.252mm,0mm,T,90.00,Comment
+Designator28,RESC1608L,10.922mm,0mm,10.922mm,0mm,10.172mm,0mm,T,90.00,Comment
+Designator27,RESC1608L,0.762mm,0mm,0.762mm,0mm,0.012mm,0mm,T,90.00,Comment
+Designator26,RESC1608L,5.842mm,0mm,5.842mm,0mm,5.092mm,0mm,T,90.00,Comment
+Designator25,RESC1608L,5.842mm,-5.08mm,5.842mm,-5.08mm,5.092mm,-5.08mm,T,90.00,Comment
+Designator24,RESC1608L,33.782mm,0mm,33.782mm,0mm,33.032mm,0mm,T,90.00,Comment
+Designator23,RESC1608L,28.702mm,-5.08mm,28.702mm,-5.08mm,27.952mm,-5.08mm,T,90.00,Comment
+Designator19,RESC1608L,16.002mm,-5.08mm,16.002mm,-5.08mm,15.252mm,-5.08mm,T,90.00,Comment
+Designator18,RESC1608L,5.842mm,-10.16mm,5.842mm,-10.16mm,5.092mm,-10.16mm,T,90.00,Comment
+Designator17,RESC1608L,16.002mm,-10.16mm,16.002mm,-10.16mm,15.252mm,-10.16mm,T,90.00,Comment
+Designator16,RESC1608L,28.702mm,-15.24mm,28.702mm,-15.24mm,27.952mm,-15.24mm,T,90.00,Comment
+Designator15,RESC1608L,33.782mm,-15.24mm,33.782mm,-15.24mm,33.032mm,-15.24mm,T,90.00,Comment
+Designator14,RESC1608L,28.702mm,-10.16mm,28.702mm,-10.16mm,27.952mm,-10.16mm,T,90.00,Comment
+Designator13,RESC1608L,37.846mm,-10.16mm,37.846mm,-10.16mm,37.096mm,-10.16mm,T,90.00,Comment
+Designator12,RESC1608L,5.842mm,-15.24mm,5.842mm,-15.24mm,5.092mm,-15.24mm,T,90.00,Comment
+Designator11,RESC1608L,21.082mm,-5.08mm,21.082mm,-5.08mm,20.332mm,-5.08mm,T,90.00,Comment
+Designator10,RESC1608L,21.082mm,0mm,21.082mm,0mm,20.332mm,0mm,T,90.00,Comment
+Designator9,RESC1608L,16.002mm,-15.24mm,16.002mm,-15.24mm,15.252mm,-15.24mm,T,90.00,Comment
+Designator8,RESC1608L,23.622mm,-2.54mm,23.622mm,-2.54mm,22.872mm,-2.54mm,T,90.00,Comment
+Designator7,RESC1608L,28.702mm,0mm,28.702mm,0mm,27.952mm,0mm,T,90.00,Comment
+Designator6,RESC1608L,37.846mm,-5.08mm,37.846mm,-5.08mm,37.096mm,-5.08mm,T,90.00,Comment
+

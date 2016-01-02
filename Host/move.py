@@ -59,16 +59,13 @@ def DoTapeMove(start, end, z):
 
 
 def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation, debug=False):
-    print "CompPos:", CompPos
-    CompPos = (CompPos[0]-conf.TIP_TO_DRAG[0], CompPos[1]-conf.TIP_TO_DRAG[1])
-    BoardPos = (BoardPos[0]-conf.TIP_TO_DRAG[0], BoardPos[1]-conf.TIP_TO_DRAG[1])
     print "DoPlace... {} {} {} {}".format(CompPos, CompZ, BoardPos, BoardZ)
     comm.SendAbsoluteXYMove(CompPos[0], CompPos[1])
     WaitMoveDone("move")
     VacuumPrepare()
+    VacuumOn()
     comm.SendAbsoluteZMove(CompZ)
     WaitMoveDone("toolhead")
-    VacuumOn()
 
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
@@ -82,11 +79,12 @@ def DoPlace(CompPos, CompZ, BoardPos, BoardZ, Rotation, debug=False):
     comm.SendAbsoluteZMove(BoardZ)
     WaitMoveDone("toolhead")
     VacuumOff()
+    time.sleep(1)
 
     comm.SendAbsoluteZMove(0)
     WaitMoveDone("toolhead")
     if Rotation != 0:
-        comm.SendToolheadRotate(360-Rotation)
+        comm.SendToolheadRotate(-Rotation)
         WaitMoveDone("toolhead")
 
 if __name__ == '__main__':

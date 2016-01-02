@@ -8,18 +8,20 @@ import conf
 import time
 
 move.Init()
-move.HomeAndWait()
+move.HomeAndWaitZ()
+# move.HomeAndWaitXY()
 
 def Material2BoardPos(m_x, m_y):
-    return (conf.BOARD_ORIGIN[0] + m_x, conf.BOARD_ORIGIN[1] - m_y)
+    return (conf.BOARD_ORIGIN[0] - m_x, conf.BOARD_ORIGIN[1] + m_y)
 
-field_info, data = csv_reader.ParseCSV("LED.csv")
+field_info, data = csv_reader.ParseCSV("2015fall.csv")
 material_list = csv_reader.MakeMaterialList(field_info, data)
 
 for i in material_list:
-    c = feeder.FindComponentByName(i.Mark)
+    c = feeder.FindComponentByName("LED1 test")
     if not c:
         continue
+    c = feeder.components[1]
     print i.Designator
     if c.NeedTapeMoving():
         move.HomeAndWaitZ()
